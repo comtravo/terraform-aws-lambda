@@ -1,10 +1,9 @@
-# Terraform AWS module for AWS ALB
+# Terraform AWS module for AWS Lambda
 
 ## Introduction
-This module creates an AWS lambda and all the related resources.
+This module creates an AWS lambda and all the related resources. It is a complete re-write of our internal terraform lambda module and all functionality has not yet been tested.
 
 ## Usage
-
 ```hcl
 module "lambda-foo" {
   source = "github.com/comtravo/terraform-aws-lambda"
@@ -58,7 +57,11 @@ module "lambda-foo" {
 
 ## Pluggable Triggers
 
-This module has pluggable triggers. The triggers can be passed by the trigger block
+### Intro
+
+This module has pluggable triggers. The triggers can be passed by the trigger block.
+
+Example:
 
 ```hcl
   trigger {
@@ -66,14 +69,37 @@ This module has pluggable triggers. The triggers can be passed by the trigger bl
     sns_topic_arn = "some_sns_arn"
   }
 ```
-
 All the available triggers can be found in the [triggers folder](./triggers)
+
+
+
+### Adding a new trigger
+
+Triggers are regular Terraform modules but only used by the main module. The only mandatory inputs are `enable`, `lambda_function_arn` and `type`.
+
+Below is an example of API Gateway trigger
+
+```hcl
+variable "enable" {
+  default = 0
+}
+
+variable "lambda_function_arn" {}
+
+resource "aws_lambda_permission" "allow_apigateway" {
+  count         = "${var.enable}"
+  statement_id  = "AllowExecutionFromApiGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = "${var.lambda_function_arn}"
+  principal     = "apigateway.amazonaws.com"
+}
+```
+
 
 ## Authors
 
 Module managed by [Comtravo](https://github.com/comtravo).
 
-License
--------
+## License
 
 MIT Licensed. See LICENSE for full details.
