@@ -10,10 +10,10 @@ variable "event_config" {
 variable "lambda_function_arn" {}
 
 resource "aws_cloudwatch_event_rule" "event_rule" {
-  name        = "${lookup(event_config, "name")}"
-  description = "${lookup(event_config, "description")}"
+  name        = "${lookup(var.event_config, "name")}"
+  description = "${lookup(var.event_config, "description")}"
 
-  event_pattern = "${lookup(event_config, "event_pattern")}"
+  event_pattern = "${lookup(var.event_config, "event_pattern")}"
 }
 
 resource "aws_cloudwatch_event_target" "lambda" {
