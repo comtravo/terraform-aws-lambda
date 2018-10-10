@@ -43,20 +43,6 @@ module "triggered-by-cloudwatch-event-schedule" {
   }
 }
 
-module "triggered-by-cloudwatch-event-trigger" {
-  enable = "${lookup(var.trigger, "type", "") == "cloudwatch-event-trigger" ? 1 : 0}"
-
-  source = "./triggers/cloudwatch_event_trigger/"
-
-  lambda_function_arn = "${aws_lambda_function.lambda.arn}"
-
-  event_config = {
-    name          = "${var.function_name}"
-    description   = "${var.description}"
-    event_pattern = "${lookup(var.trigger, "event_pattern", "")}"
-  }
-}
-
 module "triggered-by-step-function" {
   enable = "${lookup(var.trigger, "type", "") == "step-function" ? 1 : 0}"
 
