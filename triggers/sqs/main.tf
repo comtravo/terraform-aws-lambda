@@ -45,7 +45,7 @@ resource "aws_sqs_queue_policy" "SendMessage" {
   policy = <<POLICY
 {
     "Version": "2012-10-17",
-    "Id": "sqspolicy",
+    "Id": "sqspolicy-${count.index}",
     "Statement": [
         {
             "Effect": "Allow",
