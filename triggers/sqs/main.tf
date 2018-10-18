@@ -56,7 +56,7 @@ resource "aws_sqs_queue_policy" "SendMessage" {
             "Resource": "${element(aws_sqs_queue.sqs.*.arn, 0)}",
             "Condition": {
                 "ArnEquals": {
-                "aws:SourceArn": "${element(local.sns_topics, count.index)}"
+                "aws:SourceArn": "${trimspace(element(local.sns_topics, count.index))}"
             }
           }
         }
@@ -68,7 +68,7 @@ POLICY
 resource aws_sns_topic_subscription "to-sqs" {
   count     = "${var.enable * length(local.sns_topics)}"
   protocol  = "sqs"
-  topic_arn = "${element(local.sns_topics, count.index)}"
+  topic_arn = "${trimspace(element(local.sns_topics, count.index))}"
   endpoint  = "${element(aws_sqs_queue.sqs.*.arn, 0)}"
 }
 
