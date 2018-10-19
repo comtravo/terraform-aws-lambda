@@ -56,7 +56,7 @@ resource "aws_sqs_queue_policy" "SendMessage" {
       "Resource": "${element(aws_sqs_queue.sqs.*.arn, 0)}",
       "Condition": {
         "ForAnyValue:ArnEquals": {
-          "aws:SourceArn": "${local.sns_topics}"
+          "aws:SourceArn": "${jsonencode(local.sns_topics)}"
         }
       }
     }
