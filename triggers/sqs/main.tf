@@ -45,12 +45,12 @@ data "aws_iam_policy_document" "SendMessage" {
     resources = ["${element(aws_sqs_queue.sqs.*.arn, 0)}"]
 
     principals {
-      type        = "*"
+      type        = "AWS"
       identifiers = ["*"]
     }
 
     condition {
-      test     = "ForAnyValue"
+      test     = "ForAnyValue:ArnLike"
       variable = "aws:SourceArn"
       values   = ["${local.sns_topics}"]
     }
