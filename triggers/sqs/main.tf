@@ -13,7 +13,7 @@ variable "tags" {
 }
 
 locals {
-  sns_topics = "${compact(split(",", chomp(lookup(var.sqs_config, "sns_topic_arn", ""))))}"
+  sns_topics = "${compact(split(",", chomp(replace(lookup(var.sqs_config, "sns_topic_arn", ""), "\n", ""))))}"
 }
 
 resource "aws_sqs_queue" "sqs-deadletter" {
