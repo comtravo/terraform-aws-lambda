@@ -38,31 +38,30 @@ EOF
   tags = "${var.tags}"
 }
 
+data "aws_iam_policy_document" "SendMessage" {
+  statement {
+    effect    = "Allow"
+    actions   = "${list("SQS:SendMessage")}"
+    resources = ["${element(aws_sqs_queue.sqs.*.arn, 0)}"]
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    condition {
+      test     = "ForAnyValue"
+      variable = "aws:SourceArn"
+      values   = ["${local.sns_topics}"]
+    }
+  }
+}
+
 resource "aws_sqs_queue_policy" "SendMessage" {
   count     = "${var.enable * length(local.sns_topics) >= 1 ? 1: 0}"
   queue_url = "${element(aws_sqs_queue.sqs.*.id, 0)}"
 
-  policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Id": "sqspolicy",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-          "AWS": "*"
-      },
-      "Action": "SQS:SendMessage",
-      "Resource": "${element(aws_sqs_queue.sqs.*.arn, 0)}",
-      "Condition": {
-        "ForAnyValue:ArnEquals": {
-          "aws:SourceArn": "${jsonencode(local.sns_topics)}"
-        }
-      }
-    }
-  ]
-}
-POLICY
+  policy = "${data.aws_iam_policy_document.SendMessage.json}"
 }
 
 resource aws_sns_topic_subscription "to-sqs" {
