@@ -39,6 +39,8 @@ EOF
 }
 
 data "aws_iam_policy_document" "SendMessage" {
+  count = "${var.enable}"
+
   statement {
     effect    = "Allow"
     actions   = "${list("SQS:SendMessage")}"
