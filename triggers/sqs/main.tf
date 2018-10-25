@@ -12,6 +12,10 @@ variable "tags" {
   type = "map"
 }
 
+locals {
+  sns_topics = "${compact(split(",", chomp(replace(lookup(var.sqs_config, "sns_topic_arn", ""), "\n", ""))))}"
+}
+
 resource "aws_sqs_queue" "sqs-deadletter" {
   count = "${var.enable}"
   name  = "${lookup(var.sqs_config, "sqs_name")}-dlq"
@@ -26,7 +30,7 @@ resource "aws_sqs_queue" "sqs" {
 
   redrive_policy = <<EOF
 {
-  "deadLetterTargetArn": "${element(aws_sqs_queue.sqs-deadletter.*.arn, count.index)}",
+  "deadLetterTargetArn": "${element(aws_sqs_queue.sqs-deadletter.*.arn, 0)}",
   "maxReceiveCount": "${lookup(var.sqs_config, "max_receive_count")}"
 }
 EOF
@@ -34,44 +38,43 @@ EOF
   tags = "${var.tags}"
 }
 
-resource "aws_sqs_queue_policy" "SendMessage" {
-  count     = "${var.enable}"
-  queue_url = "${element(aws_sqs_queue.sqs.*.id, count.index)}"
+data "aws_iam_policy_document" "SendMessage" {
+  statement {
+    effect    = "Allow"
+    actions   = "${list("SQS:SendMessage")}"
+    resources = ["${element(aws_sqs_queue.sqs.*.arn, 0)}"]
 
-  policy = <<POLICY
-{
-    "Version": "2012-10-17",
-    "Id": "sqspolicy",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": "*"
-            },
-            "Action": "SQS:SendMessage",
-            "Resource": "${element(aws_sqs_queue.sqs.*.arn, count.index)}",
-            "Condition": {
-                "ArnEquals": {
-                "aws:SourceArn": "${lookup(var.sqs_config, "sns_topic_arn")}"
-            }
-          }
-        }
-      ]
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    condition {
+      test     = "ForAnyValue:ArnLike"
+      variable = "aws:SourceArn"
+      values   = ["${local.sns_topics}"]
+    }
+  }
 }
-POLICY
+
+resource "aws_sqs_queue_policy" "SendMessage" {
+  count     = "${var.enable * length(local.sns_topics) >= 1 ? 1: 0}"
+  queue_url = "${element(aws_sqs_queue.sqs.*.id, 0)}"
+
+  policy = "${data.aws_iam_policy_document.SendMessage.json}"
 }
 
 resource aws_sns_topic_subscription "to-sqs" {
-  count     = "${var.enable}"
+  count     = "${var.enable * length(local.sns_topics)}"
   protocol  = "sqs"
-  topic_arn = "${lookup(var.sqs_config, "sns_topic_arn")}"
-  endpoint  = "${element(aws_sqs_queue.sqs.*.arn, count.index)}"
+  topic_arn = "${trimspace(element(local.sns_topics, count.index))}"
+  endpoint  = "${element(aws_sqs_queue.sqs.*.arn, 0)}"
 }
 
 resource "aws_lambda_event_source_mapping" "event_source_mapping" {
   count            = "${var.enable}"
   batch_size       = "${lookup(var.sqs_config, "batch_size")}"
-  event_source_arn = "${element(aws_sqs_queue.sqs.*.arn, count.index)}"
+  event_source_arn = "${element(aws_sqs_queue.sqs.*.arn, 0)}"
   enabled          = true
   function_name    = "${var.lambda_function_arn}"
 }
