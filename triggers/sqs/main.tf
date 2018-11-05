@@ -31,7 +31,7 @@ resource "aws_sqs_queue" "sqs" {
   redrive_policy = <<EOF
 {
   "deadLetterTargetArn": "${element(aws_sqs_queue.sqs-deadletter.*.arn, 0)}",
-  "maxReceiveCount": "${lookup(var.sqs_config, "max_receive_count")}"
+  "maxReceiveCount": 12
 }
 EOF
 
