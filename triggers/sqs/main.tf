@@ -28,12 +28,14 @@ resource "aws_sqs_queue" "sqs" {
   name                       = "${lookup(var.sqs_config, "sqs_name")}"
   visibility_timeout_seconds = "${lookup(var.sqs_config, "visibility_timeout_seconds")}"
 
-  redrive_policy = <<EOF
-{
-  "deadLetterTargetArn": "${element(aws_sqs_queue.sqs-deadletter.*.arn, 0)}",
-  "maxReceiveCount": 12
-}
-EOF
+  redrive_policy = "{\"deadLetterTargetArn\":\"${element(aws_sqs_queue.sqs-deadletter.*.arn, 0)}\",\"maxReceiveCount\":12}"
+
+#   <<EOF
+# {
+#   "deadLetterTargetArn": "${element(aws_sqs_queue.sqs-deadletter.*.arn, 0)}",
+#   "maxReceiveCount": 12
+# }
+# EOF
 
   tags = "${var.tags}"
 }
