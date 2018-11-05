@@ -102,7 +102,6 @@ module "triggered-by-sqs" {
     sns_topic_arn              = "${lookup(var.trigger, "sns_topic_arn", "")}"
     sqs_name                   = "${aws_lambda_function.lambda.function_name}"
     visibility_timeout_seconds = "${var.timeout + 5}"
-    max_receive_count          = "${lookup(var.trigger, "max_receive_count", 12)}"
     batch_size                 = "${lookup(var.trigger, "batch_size", 1)}"
   }
 
