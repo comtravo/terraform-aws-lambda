@@ -100,7 +100,7 @@ module "triggered-by-sqs" {
 
   sqs_config = {
     sns_topic_arn              = "${lookup(var.trigger, "sns_topic_arn", "")}"
-    sqs_name                   = "${aws_lambda_function.lambda.function_name}"
+    sqs_name                   = "${var.function_name}"
     visibility_timeout_seconds = "${var.timeout + 5}"
     batch_size                 = "${lookup(var.trigger, "batch_size", 1)}"
   }
