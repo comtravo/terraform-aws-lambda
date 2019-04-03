@@ -2,6 +2,12 @@ variable "file_name" {
   description = "lambda function filename name"
 }
 
+variable "layers" {
+  description = "List of layers for this lambda function"
+  type        = "list"
+  default     = []
+}
+
 variable "function_name" {
   description = "lambda function name"
 }
@@ -65,7 +71,6 @@ variable "tags" {
   default     = {}
 }
 
-# See bug fix PR: https://github.com/terraform-providers/terraform-provider-aws/pull/3806
 variable "reserved_concurrent_executions" {
   description = "Reserved concurrent executions  for this lambda function"
   default     = -1
