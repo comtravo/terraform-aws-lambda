@@ -11,6 +11,7 @@ module "lambda-foo" {
   ################################################
   #        LAMBDA FUNCTION CONFIGURATION         #
   file_name = "${path.root}/artifacts/foo.zip"
+  layers = ["${aws_lambda_layer_version.my_awesome_layer.arn}"]
 
   function_name = "lambda-foo-${terraform.workspace}"
   handler       = "index.foo"

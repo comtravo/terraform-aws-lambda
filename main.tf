@@ -2,6 +2,7 @@
 resource "aws_lambda_function" "lambda" {
   filename                       = "${var.file_name}"
   function_name                  = "${var.function_name}"
+  layers                         = ["${var.layers}"]
   handler                        = "${var.handler}"
   role                           = "${var.role}"
   description                    = "${var.description}"
