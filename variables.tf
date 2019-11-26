@@ -103,6 +103,9 @@ locals {
 }
 
 variable "tracing_config" {
-  default     = {}
+  default = {
+    mode = "PassThrough"
+  }
+
   description = "https://www.terraform.io/docs/providers/aws/r/lambda_function.html"
 }
