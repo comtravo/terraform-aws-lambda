@@ -101,3 +101,8 @@ locals {
   tags                 = "${merge(var.tags, local._tags)}"
   cloudwatch_log_group = "/aws/lambda/${var.function_name}"
 }
+
+variable "tracing_config" {
+  default     = {}
+  description = "https://www.terraform.io/docs/providers/aws/r/lambda_function.html"
+}

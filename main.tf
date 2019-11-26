@@ -13,6 +13,8 @@ resource "aws_lambda_function" "lambda" {
   publish                        = "${var.publish}"
   source_code_hash               = "${local.source_code_hash}"
 
+  tracing_config = ["${var.tracing_config}"]
+
   vpc_config {
     subnet_ids         = ["${var.vpc_config["subnet_ids"]}"]
     security_group_ids = ["${var.vpc_config["security_group_ids"]}"]
