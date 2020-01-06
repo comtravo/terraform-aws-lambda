@@ -83,10 +83,10 @@ resource "aws_lambda_event_source_mapping" "event_source_mapping" {
 
 output "dlq-id" {
   description = "DLQ endpoint"
-  value       = "${aws_sqs_queue.sqs-deadletter.id}"
+  value       = "${element(concat(aws_sqs_queue.sqs-deadletter.*.id, list("")), 0)}"
 }
 
 output "dlq-arn" {
   description = "DLQ ARN"
-  value       = "${aws_sqs_queue.sqs-deadletter.arn}"
+  value       = "${element(concat(aws_sqs_queue.sqs-deadletter.*.arn, list("")), 0)}"
 }
