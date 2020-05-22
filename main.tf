@@ -1,10 +1,10 @@
 /**
- * Terraform AWS Lambda module with various triggers.
+ * # Terraform AWS Lambda module with various triggers.
  *
- * Usage:
+ * ##  Usage:
  * For detailed examples: check the triigers folder for triggers specific examples.
  *
- * Generic example:
+ * ## Generic example:
  *```hcl
  *module "lambda-offer-email" {
  *  source = "github.com/comtravo/terraform-aws-lambda?ref=2.4.0"
