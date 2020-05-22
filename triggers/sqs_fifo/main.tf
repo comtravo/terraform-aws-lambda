@@ -4,7 +4,7 @@ variable "enable" {
 }
 
 variable "lambda_function_arn" {
-  description = "ARN of the lambda"
+  description = "Lambda arn"
 }
 
 variable "sqs_config" {

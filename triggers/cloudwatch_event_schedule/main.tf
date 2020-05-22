@@ -10,7 +10,7 @@ variable "schedule_config" {
 }
 
 variable "lambda_function_arn" {
-  description = "ARN of the lambda"
+  description = "Lambda arn"
 }
 
 resource "aws_cloudwatch_event_rule" "rule" {

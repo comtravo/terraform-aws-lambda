@@ -8,7 +8,7 @@ variable "region" {
 }
 
 variable "lambda_function_arn" {
-  description = "ARN of the lambda"
+  description = "Lambda arn"
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch_logs" {

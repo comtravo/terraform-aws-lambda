@@ -4,7 +4,7 @@ variable "enable" {
 }
 
 variable "lambda_name" {
-  description = "ARN of the lambda"
+  description = "Lambda arn"
 }
 
 variable "log_group_name" {
