@@ -1,3 +1,58 @@
+Terraform AWS Lambda module with various triggers.
+
+Usage:
+For detailed examples: check the triigers folder for triggers specific examples.
+
+Generic example:
+```hcl
+module "lambda-offer-email" {
+ source = "github.com/comtravo/terraform-aws-lambda?ref=2.4.0"
+
+ ################################################
+ #        LAMBDA FUNCTION CONFIGURATION         #
+ file_name = "${path.root}/../artifacts/offer-email.zip"
+
+ function_name = "lambda-offer-email-${terraform.workspace}"
+ handler       = "index.offerEmails"
+ memory_size   = 1024
+
+ trigger {
+   type          = "sqs"
+   sns_topic_arn = "arn:aws:sns:${var.region}:${var.ct_account_id}:lambda-offer-${terraform.workspace}"
+ }
+
+ environment = "${merge(
+   local.ct_lambda_commons,
+   map(
+     "ZENDESK_ENDPOINT", "${var.production_env ? "https://comtravo.zendesk.com/api/v2" : "https://stagingcomtravo.zendesk.com/api/v2"}",
+     "ZENDESK_USER_NAME", "infrastructure.admin@comtravo.com",
+     "OFFER_SENDER_EMAIL", "${var.production_env ? "buchung@comtravo.com" : "test@comtravo.com"}",
+     "OFFER_BCC_EMAIL", "${var.production_env ? "comms@comtravo.com,ms@comtravo.com" : "${join(",", var.owners)}"}",
+     "SECRET_PARAM_LIST", "${jsonencode(list("S2S_JWT_SECRET_KEY", "ZENDESK_TOKEN", "LOCAL_JWT_SECRET_KEY"))}"
+   )
+ )}"
+
+ enable_cloudwatch_log_subscription = true
+
+ cloudwatch_log_subscription {
+   destination_arn = "${module.lambda-elk-logging.lambda_arn}"
+   filter_pattern  = "[timestamp=*Z, request_id=\"*-*\", logLevel=*, event]"
+ }
+
+ tracing_config = "${var.lambda_xray_config}"
+
+ #                                              #
+ ################################################
+
+ region = "${var.region}"
+ role   = "${aws_iam_role.lambda.arn}"
+ vpc_config {
+   subnet_ids         = ["${module.main_vpc.private_subnets}"]
+   security_group_ids = ["${module.main_vpc.vpc_default_sg}"]
+ }
+}
+```
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
