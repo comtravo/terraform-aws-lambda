@@ -1,8 +1,7 @@
 /**
- * # Terraform AWS Lambda module with various triggers.
  *
  * ##  Usage:
- * For detailed examples: check the triigers folder for triggers specific examples.
+ *
  *
  * ## Generic example:
  *```hcl
