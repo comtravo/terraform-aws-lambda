@@ -1,5 +1,4 @@
 
-##  Usage:
 
 ## Generic example:
 ```hcl
