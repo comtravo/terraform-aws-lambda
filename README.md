@@ -8,11 +8,11 @@
 | region | AWS region | string | n/a | yes |
 | role | lambda function role | string | n/a | yes |
 | trigger | trigger configuration for this lambda function | map | n/a | yes |
-| vpc\_config |  | map | n/a | yes |
-| cloudwatch\_log\_retention |  | string | `"90"` | no |
+| vpc\_config | VPC configuration for lambda | map | n/a | yes |
+| cloudwatch\_log\_retention | Cloudwatch log retention | string | `"90"` | no |
 | cloudwatch\_log\_subscription | cloudwatch log stream configuration | map | `<map>` | no |
 | description | lambda function description | string | `"Managed by Terraform"` | no |
-| enable\_cloudwatch\_log\_subscription |  | string | `"false"` | no |
+| enable\_cloudwatch\_log\_subscription | Enable cloudwatch log subscription | string | `"false"` | no |
 | environment | lambda environment variables | map | `<map>` | no |
 | layers | List of layers for this lambda function | list | `<list>` | no |
 | memory\_size | lambda function memory size | string | `"128"` | no |
@@ -28,13 +28,13 @@
 | Name | Description |
 |------|-------------|
 | arn | AWS lambda arn |
-| dlq-arn | AWS lambda DLQ ARN |
-| dlq-url | AWS lambda DLQ URL |
+| dlq\_arn | AWS lambda DLQ arn |
+| dlq\_url | AWS lambda DLQ url |
 | invoke\_arn | AWS lambda invoke\_arn |
 | last\_modified | AWS lambda last\_modified |
 | qualified\_arn | AWS lambda qualified\_arn |
-| queue-arn | AWS lambda SQS ARN |
-| queue-url | AWS lambda SQS URL |
+| queue\_arn | AWS lambda SQS arn |
+| queue\_url | AWS lambda SQS url |
 | source\_code\_hash | AWS lambda source\_code\_hash |
 | source\_code\_size | AWS lambda source\_code\_size |
 | version | AWS lambda version |
