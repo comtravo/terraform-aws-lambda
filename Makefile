@@ -8,3 +8,7 @@ fmt:
 
 generate-docs:
 	@$(GENERATE_DOCS_COMMAND)
+	@for terraform_module in $(TERRAFORM_MODULES) ; do \
+			cd $$terraform_module && $(GENERATE_DOCS_COMMAND) && cd -; \
+	done
+
