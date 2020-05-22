@@ -25,11 +25,8 @@
  *  environment = "${merge(
  *    local.ct_lambda_commons,
  *    map(
- *      "ZENDESK_ENDPOINT", "${var.production_env ? "https://comtravo.zendesk.com/api/v2" : "https://stagingcomtravo.zendesk.com/api/v2"}",
- *      "ZENDESK_USER_NAME", "infrastructure.admin@comtravo.com",
- *      "OFFER_SENDER_EMAIL", "${var.production_env ? "buchung@comtravo.com" : "test@comtravo.com"}",
- *      "OFFER_BCC_EMAIL", "${var.production_env ? "comms@comtravo.com,ms@comtravo.com" : "${join(",", var.owners)}"}",
- *      "SECRET_PARAM_LIST", "${jsonencode(list("S2S_JWT_SECRET_KEY", "ZENDESK_TOKEN", "LOCAL_JWT_SECRET_KEY"))}"
+ *      "FOO", "baz",
+ *      "LOREM", "ipsum",
  *    )
  *  )}"
  *
