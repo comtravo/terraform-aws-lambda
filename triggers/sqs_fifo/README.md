@@ -11,8 +11,8 @@
 
 | Name | Description |
 |------|-------------|
-| dlq-arn | DLQ ARN |
-| dlq-id | DLQ endpoint |
-| queue-arn | SQS ARN |
-| queue-id | SQS endpoint |
+| dlq\_arn | Dead Letter Queue arn |
+| dlq\_id | Dead Leter Queue endpoint |
+| queue\_arn | SQS arn |
+| queue\_id | SQS endpoint |
 

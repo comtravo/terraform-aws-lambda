@@ -91,22 +91,22 @@ resource "aws_lambda_event_source_mapping" "event_source_mapping" {
   function_name    = "${var.lambda_function_arn}"
 }
 
-output "dlq-id" {
-  description = "DLQ endpoint"
+output "dlq_id" {
+  description = "Dead Leter Queue endpoint"
   value       = "${element(concat(aws_sqs_queue.sqs-deadletter.*.id, list("")), 0)}"
 }
 
-output "dlq-arn" {
-  description = "DLQ ARN"
+output "dlq_arn" {
+  description = "Dead Letter Queue arn"
   value       = "${element(concat(aws_sqs_queue.sqs-deadletter.*.arn, list("")), 0)}"
 }
 
-output "queue-id" {
+output "queue_id" {
   description = "SQS endpoint"
   value       = "${element(concat(aws_sqs_queue.sqs.*.id, list("")), 0)}"
 }
 
-output "queue-arn" {
-  description = "SQS ARN"
+output "queue_arn" {
+  description = "SQS arn"
   value       = "${element(concat(aws_sqs_queue.sqs.*.arn, list("")), 0)}"
 }
