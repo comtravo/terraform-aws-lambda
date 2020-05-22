@@ -1,13 +1,17 @@
 variable "enable" {
-  default = 0
+  default     = 0
+  description = "0 to disable and 1 to enable this module"
 }
 
 variable "event_config" {
-  default = {}
-  type    = "map"
+  default     = {}
+  type        = "map"
+  description = "Cloudwatch event configuration"
 }
 
-variable "lambda_function_arn" {}
+variable "lambda_function_arn" {
+  description = "ARN of the lambda"
+}
 
 resource "aws_cloudwatch_event_rule" "event_rule" {
   count       = "${var.enable}"

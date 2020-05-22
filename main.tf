@@ -111,7 +111,7 @@ module "triggered-by-sqs" {
   tags = "${local.tags}"
 }
 
-module "triggered-by-sqs" {
+module "triggered-by-sqs-fifo" {
   enable = "${lookup(var.trigger, "type", "") == "sqs-fifo" ? 1 : 0}"
 
   source = "./triggers/sqs_fifo/"

@@ -35,10 +35,20 @@ output source_code_size {
 
 output "dlq-url" {
   description = "AWS lambda DLQ URL"
-  value       = "${module.triggered-by-sqs.dlq-id}"
+  value       = "${element(compact(concat(module.triggered-by-sqs.dlq-id, module.triggered-by-sqs-fifo.dlq-id)), 0)}"
 }
 
 output "dlq-arn" {
   description = "AWS lambda DLQ ARN"
-  value       = "${module.triggered-by-sqs.dlq-arn}"
+  value       = "${element(compact(concat(module.triggered-by-sqs.dlq-arn, module.triggered-by-sqs-fifo.dlq-arn)), 0)}"
+}
+
+output "queue-url" {
+  description = "AWS lambda SQS URL"
+  value       = "${element(compact(concat(module.triggered-by-sqs.id, module.triggered-by-sqs-fifo.id)), 0)}"
+}
+
+output "queue-arn" {
+  description = "AWS lambda SQS ARN"
+  value       = "${element(compact(concat(module.triggered-by-sqs.arn, module.triggered-by-sqs-fifo.arn)), 0)}"
 }

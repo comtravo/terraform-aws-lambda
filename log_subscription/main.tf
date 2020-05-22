@@ -1,13 +1,19 @@
 variable "enable" {
-  default = 0
+  default     = 0
+  description = "0 to disable and 1 to enable this module"
 }
 
-variable "lambda_name" {}
+variable "lambda_name" {
+  description = "ARN of the lambda"
+}
 
-variable "log_group_name" {}
+variable "log_group_name" {
+  description = "Lambda cloud watch logs stream name"
+}
 
 variable "cloudwatch_log_subscription" {
-  type = "map"
+  type        = "map"
+  description = "Cloudwatch log subscription configuration"
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "lambda_cloudwatch_subscription" {

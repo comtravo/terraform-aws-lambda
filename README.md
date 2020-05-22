@@ -33,6 +33,8 @@
 | invoke\_arn | AWS lambda invoke\_arn |
 | last\_modified | AWS lambda last\_modified |
 | qualified\_arn | AWS lambda qualified\_arn |
+| queue-arn | AWS lambda SQS ARN |
+| queue-url | AWS lambda SQS URL |
 | source\_code\_hash | AWS lambda source\_code\_hash |
 | source\_code\_size | AWS lambda source\_code\_size |
 | version | AWS lambda version |
