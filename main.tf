@@ -111,6 +111,23 @@ module "triggered-by-sqs" {
   tags = "${local.tags}"
 }
 
+module "triggered-by-sqs" {
+  enable = "${lookup(var.trigger, "type", "") == "sqs-fifo" ? 1 : 0}"
+
+  source = "./triggers/sqs_fifo/"
+
+  lambda_function_arn = "${aws_lambda_function.lambda.arn}"
+
+  sqs_config = {
+    sns_topic_arn              = "${lookup(var.trigger, "sns_topic_arn", "")}"
+    sqs_name                   = "${var.function_name}"
+    visibility_timeout_seconds = "${var.timeout + 5}"
+    batch_size                 = "${lookup(var.trigger, "batch_size", 1)}"
+  }
+
+  tags = "${local.tags}"
+}
+
 module "cloudwatch-log-subscription" {
   enable = "${var.enable_cloudwatch_log_subscription ? 1 : 0}"
 

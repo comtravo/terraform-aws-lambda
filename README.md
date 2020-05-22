@@ -1,106 +1,39 @@
-# Terraform AWS module for AWS Lambda
+## Inputs
 
-## Introduction
-This module creates an AWS lambda and all the related resources. It is a complete re-write of our internal terraform lambda module and all functionality has not yet been tested.
+| Name | Description | Type | Default | Required |
+|------|-------------|:----:|:-----:|:-----:|
+| file\_name | lambda function filename name | string | n/a | yes |
+| function\_name | lambda function name | string | n/a | yes |
+| handler | lambda function handler | string | n/a | yes |
+| region | AWS region | string | n/a | yes |
+| role | lambda function role | string | n/a | yes |
+| trigger | trigger configuration for this lambda function | map | n/a | yes |
+| vpc\_config |  | map | n/a | yes |
+| cloudwatch\_log\_retention |  | string | `"90"` | no |
+| cloudwatch\_log\_subscription | cloudwatch log stream configuration | map | `<map>` | no |
+| description | lambda function description | string | `"Managed by Terraform"` | no |
+| enable\_cloudwatch\_log\_subscription |  | string | `"false"` | no |
+| environment | lambda environment variables | map | `<map>` | no |
+| layers | List of layers for this lambda function | list | `<list>` | no |
+| memory\_size | lambda function memory size | string | `"128"` | no |
+| publish | Publish lambda function | string | `"false"` | no |
+| reserved\_concurrent\_executions | Reserved concurrent executions  for this lambda function | string | `"-1"` | no |
+| runtime | lambda function runtime | string | `"nodejs12.x"` | no |
+| tags | Tags for this lambda function | map | `<map>` | no |
+| timeout | lambda function runtime | string | `"300"` | no |
+| tracing\_config | https://www.terraform.io/docs/providers/aws/r/lambda\_function.html | map | `<map>` | no |
 
-## Usage
-```hcl
-module "lambda-foo" {
-  source = "github.com/comtravo/terraform-aws-lambda"
+## Outputs
 
-  ################################################
-  #        LAMBDA FUNCTION CONFIGURATION         #
-  file_name = "${path.root}/artifacts/foo.zip"
-  layers = ["${aws_lambda_layer_version.my_awesome_layer.arn}"]
+| Name | Description |
+|------|-------------|
+| arn | AWS lambda arn |
+| dlq-arn | AWS lambda DLQ ARN |
+| dlq-url | AWS lambda DLQ URL |
+| invoke\_arn | AWS lambda invoke\_arn |
+| last\_modified | AWS lambda last\_modified |
+| qualified\_arn | AWS lambda qualified\_arn |
+| source\_code\_hash | AWS lambda source\_code\_hash |
+| source\_code\_size | AWS lambda source\_code\_size |
+| version | AWS lambda version |
 
-  function_name = "lambda-foo-${terraform.workspace}"
-  handler       = "index.foo"
-  memory_size   = 1024
-
-  trigger {
-    type          = "sqs"
-    sns_topic_arn = "some_sns_arn"
-  }
-
-  environment = "${merge(
-    local.ct_lambda_commons,
-    map(
-      "foo", "FOO",
-      "bar", "BAR",
-      "baz", "BAZ",
-      "jazz", "JAZZ",
-      "lorem", "LOREM"
-    )
-  )}"
-
-  # out of band configuration is needed because Terraform treats
-  # the cloudwatch_log_subscription block as a computed resource
-  # and lookup function doesn't work. Accessing via array style is not possible
-  # because the cloudwatch_log_subscription block is an optional block.
-  enable_cloudwatch_log_subscription = true
-
-  cloudwatch_log_subscription {
-    destination_arn = "${module.lambda-elk-logging.lambda_arn}"
-    filter_pattern  = "[timestamp=*Z, request_id=\"*-*\", event]"
-  }
-
-  #                                              #
-  ################################################
-
-  region = "${var.region}"
-  role   = "${aws_iam_role.lambda.arn}"
-  vpc_config {
-    subnet_ids         = ["${module.main_vpc.private_subnets}"]
-    security_group_ids = ["${module.main_vpc.vpc_default_sg}"]
-  }
-}
-```
-
-## Pluggable Triggers
-
-### Intro
-
-This module has pluggable triggers. The triggers can be passed by the trigger block.
-
-Example:
-
-```hcl
-  trigger {
-    type          = "sqs"
-    sns_topic_arn = "some_sns_arn"
-  }
-```
-All the available triggers can be found in the [triggers folder](./triggers)
-
-
-
-### Adding a new trigger
-
-Triggers are regular Terraform modules but only used by the main module. The only mandatory inputs are `enable`, `lambda_function_arn` and `type`.
-
-Below is an example of API Gateway trigger
-
-```hcl
-variable "enable" {
-  default = 0
-}
-
-variable "lambda_function_arn" {}
-
-resource "aws_lambda_permission" "allow_apigateway" {
-  count         = "${var.enable}"
-  statement_id  = "AllowExecutionFromApiGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = "${var.lambda_function_arn}"
-  principal     = "apigateway.amazonaws.com"
-}
-```
-
-
-## Authors
-
-Module managed by [Comtravo](https://github.com/comtravo).
-
-## License
-
-MIT Licensed. See LICENSE for full details.
