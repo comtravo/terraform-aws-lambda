@@ -1,7 +1,22 @@
-## Inputs
+## Required Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| lambda\_function\_arn | Lambda arn | string | n/a | yes |
-| enable | 0 to disable and 1 to enable this module | string | `"0"` | no |
+The following input variables are required:
+
+### lambda\_function\_arn
+
+Description: Lambda arn
+
+Type: `string`
+
+## Optional Inputs
+
+The following input variables are optional (have default values):
+
+### enable
+
+Description: 0 to disable and 1 to enable this module
+
+Type: `string`
+
+Default: `"0"`
 

@@ -1,18 +1,54 @@
-## Inputs
+## Required Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| lambda\_function\_arn | Lambda arn | string | n/a | yes |
-| sqs\_config | SQS queue configuration | map | n/a | yes |
-| tags | Tags | map | n/a | yes |
-| enable | 0 to disable and 1 to enable this module | string | `"0"` | no |
+The following input variables are required:
+
+### lambda\_function\_arn
+
+Description: Lambda arn
+
+Type: `string`
+
+### sqs\_config
+
+Description: SQS queue configuration
+
+Type: `map`
+
+### tags
+
+Description: Tags
+
+Type: `map`
+
+## Optional Inputs
+
+The following input variables are optional (have default values):
+
+### enable
+
+Description: 0 to disable and 1 to enable this module
+
+Type: `string`
+
+Default: `"0"`
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| dlq\_arn | DLQ ARN |
-| dlq\_id | DLQ ID |
-| queue\_arn | SQS ARN |
-| queue\_id | SQS endpoint |
+The following outputs are exported:
+
+### dlq\_arn
+
+Description: DLQ ARN
+
+### dlq\_id
+
+Description: DLQ ID
+
+### queue\_arn
+
+Description: SQS ARN
+
+### queue\_id
+
+Description: SQS endpoint
 
