@@ -1,7 +1,5 @@
 /**
  *
- * ##  Usage:
- *
  *
  * ## Generic example:
  *```hcl
