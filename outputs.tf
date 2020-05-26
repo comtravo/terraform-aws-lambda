@@ -45,10 +45,10 @@ output "dlq_arn" {
 
 output "queue_url" {
   description = "AWS lambda SQS url"
-  value       = "${element(compact(concat(module.triggered-by-sqs.id, module.triggered-by-sqs-fifo.id)), 0)}"
+  value       = "${element(compact(concat(module.triggered-by-sqs.queue_id, module.triggered-by-sqs-fifo.queue_id)), 0)}"
 }
 
 output "queue_arn" {
   description = "AWS lambda SQS arn"
-  value       = "${element(compact(concat(module.triggered-by-sqs.arn, module.triggered-by-sqs-fifo.arn)), 0)}"
+  value       = "${element(compact(concat(module.triggered-by-sqs.queue_arn, module.triggered-by-sqs-fifo.queue_arn)), 0)}"
 }

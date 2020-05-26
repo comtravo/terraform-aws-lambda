@@ -73,7 +73,6 @@
  *
  */
 
-
 variable "enable" {
   default     = 0
   description = "0 to disable and 1 to enable this module"

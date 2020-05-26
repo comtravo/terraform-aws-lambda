@@ -47,7 +47,7 @@ variable "publish" {
 }
 
 variable "vpc_config" {
-  type = "map"
+  type        = "map"
   description = "VPC configuration for lambda"
 }
 
@@ -83,12 +83,12 @@ variable "region" {
 }
 
 variable "enable_cloudwatch_log_subscription" {
-  default = false
+  default     = false
   description = "Enable cloudwatch log subscription"
 }
 
 variable "cloudwatch_log_retention" {
-  default = 90
+  default     = 90
   description = "Cloudwatch log retention"
 }
 
