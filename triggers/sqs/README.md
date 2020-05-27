@@ -8,12 +8,13 @@ Allow this lambda to be triggered by SQS and optionally subscribe to SNS topics
 | Name | Version |
 |------|---------|
 | terraform | >= 0.12 |
+| aws | ~> 2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | n/a |
+| aws | ~> 2.0 |
 
 ## Inputs
 
