@@ -76,10 +76,15 @@ variable "trigger" {
 variable "cloudwatch_log_subscription" {
   description = "Cloudwatch log stream configuration"
   type = object({
+    enable : bool
     filter_pattern : string
     destination_arn : string
   })
-  default = {}
+  default = {
+    enable : false
+    filter_pattern : null
+    destination_arn : null
+  }
 }
 
 variable "tags" {
@@ -98,11 +103,6 @@ variable "region" {
   type        = string
 }
 
-variable "enable_cloudwatch_log_subscription" {
-  description = "Enable Cloudwatch log subscription"
-  default     = false
-  type        = bool
-}
 
 variable "cloudwatch_log_retention" {
   description = "Enable Cloudwatch logs retention"

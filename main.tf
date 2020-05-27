@@ -130,7 +130,7 @@ module "triggered-by-sqs" {
 }
 
 module "cloudwatch-log-subscription" {
-  enable = var.enable_cloudwatch_log_subscription
+  enable = var.cloudwatch_log_subscription.enable
 
   source = "./log_subscription/"
 
