@@ -75,8 +75,11 @@ variable "trigger" {
 
 variable "cloudwatch_log_subscription" {
   description = "Cloudwatch log stream configuration"
-  type        = map(string)
-  default     = {}
+  type = object({
+    filter_pattern : string
+    destination_arn : string
+  })
+  default = {}
 }
 
 variable "tags" {
@@ -130,4 +133,17 @@ variable "tracing_config" {
   }
 
   description = "https://www.terraform.io/docs/providers/aws/r/lambda_function.html"
+}
+
+locals {
+  allowed_triggers = [
+    "api-gateway",
+    "cloudwatch-logs",
+    "cognito-idp",
+    "cloudwatch-event-schedule",
+    "cloudwatch-event-trigger",
+    "sqs",
+    "step-function",
+
+  ]
 }
