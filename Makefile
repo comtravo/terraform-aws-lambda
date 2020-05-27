@@ -1,5 +1,9 @@
 #!make
 
+SHELL:=bash
+GENERATE_DOCS_COMMAND:=terraform-docs markdown --no-escape . > README.md
+TRIGGERS:=$(shell find triggers -type d -maxdepth 1 -not -path 'triggers')
+
 fmt:
 	@terraform fmt -recursive
 
@@ -10,5 +14,4 @@ lint:
 
 
 generate-docs: fmt lint
-	# @$(shell terraform-docs markdown --no-escape . > README.md)
-	@$(shell for i in `find triggers -type d -maxdepth 2 -not -path 'triggers' -not -path '**/.terraform' -print`; do cd $i && terraform-docs markdown --no-escape . > README.md && cd -; done)
+	@$(shell $(GENERATE_DOCS_COMMAND))
