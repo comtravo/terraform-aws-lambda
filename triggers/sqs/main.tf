@@ -60,7 +60,7 @@ data "aws_iam_policy_document" "SendMessage" {
 }
 
 resource "aws_sqs_queue_policy" "SendMessage" {
-  count     = "${var.enable * length(local.sns_topics) >= 1 ? 1: 0}"
+  count     = "${var.enable * length(local.sns_topics) >= 1 ? 1 : 0}"
   queue_url = "${element(aws_sqs_queue.sqs.*.id, 0)}"
 
   policy = "${data.aws_iam_policy_document.SendMessage.json}"

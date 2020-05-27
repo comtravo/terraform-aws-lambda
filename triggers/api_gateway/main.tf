@@ -1,13 +1,20 @@
 variable "enable" {
-  default = 0
+  default     = false
+  type        = bool
+  description = "Enable API Gateway trigger"
+
 }
 
-variable "lambda_function_arn" {}
+variable "lambda_function_arn" {
+  type        = string
+  description = "Lambda arn"
+}
 
 resource "aws_lambda_permission" "allow_apigateway" {
-  count         = "${var.enable}"
+  count         = var.enable ? 1 : 0
   statement_id  = "AllowExecutionFromApiGateway"
   action        = "lambda:InvokeFunction"
-  function_name = "${var.lambda_function_arn}"
+  function_name = var.lambda_function_arn
   principal     = "apigateway.amazonaws.com"
 }
+
