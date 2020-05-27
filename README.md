@@ -46,7 +46,7 @@ MIT Licensed. See LICENSE for full details.
 | tags | Tags for this lambda function | `map` | `{}` | no |
 | timeout | Lambda function runtime | `number` | `300` | no |
 | tracing_config | https://www.terraform.io/docs/providers/aws/r/lambda_function.html | <pre>object({<br>    mode : string<br>  })</pre> | <pre>{<br>  "mode": "PassThrough"<br>}</pre> | no |
-| trigger | trigger configuration for this lambda function | `map(string)` | n/a | yes |
+| trigger | Trigger configuration for this lambda function | `map(string)` | n/a | yes |
 | vpc_config | Lambda VPC configuration | <pre>object({<br>    subnet_ids : list(string)<br>    security_group_ids : list(string)<br>  })</pre> | n/a | yes |
 
 ## Outputs

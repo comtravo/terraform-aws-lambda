@@ -46,7 +46,7 @@ resource "aws_lambda_function" "lambda" {
 }
 
 resource "aws_cloudwatch_log_group" "lambda" {
-  name              = local.cloudwatch_log_group
+  name              = local.cloudwatch_log_group_name
   retention_in_days = var.cloudwatch_log_retention
 }
 
@@ -130,7 +130,7 @@ module "triggered-by-sqs" {
 }
 
 module "cloudwatch-log-subscription" {
-  enable = var.enable_cloudwatch_log_subscription ? 1 : 0
+  enable = var.enable_cloudwatch_log_subscription
 
   source = "./log_subscription/"
 

@@ -69,7 +69,7 @@ variable "environment" {
 }
 
 variable "trigger" {
-  description = "trigger configuration for this lambda function"
+  description = "Trigger configuration for this lambda function"
   type        = map(string)
 }
 
@@ -117,8 +117,8 @@ locals {
 locals {
   source_code_hash = filebase64sha256(var.file_name)
 
-  tags                 = merge(var.tags, local._tags)
-  cloudwatch_log_group = "/aws/lambda/${var.function_name}"
+  tags                      = merge(var.tags, local._tags)
+  cloudwatch_log_group_name = "/aws/lambda/${var.function_name}"
 }
 
 variable "tracing_config" {
