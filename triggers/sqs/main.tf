@@ -1,32 +1,55 @@
 variable "enable" {
-  default = 0
-}
-
-variable "lambda_function_arn" {}
-
-variable "sqs_config" {
-  type = "map"
-}
-
-variable "tags" {
-  type = "map"
+  default     = false
+  type        = bool
+  description = "Enable module"
 }
 
 locals {
-  sns_topics = "${compact(split(",", chomp(replace(lookup(var.sqs_config, "sns_topic_arn", ""), "\n", ""))))}"
+  enable_count = var.enable ? 1 : 0
+}
+
+variable "lambda_function_arn" {
+  type        = string
+  description = "Lambda function arn"
+}
+
+variable "sqs_config" {
+  type = object({
+    sns_topics : list(string)
+    sqs_name : string
+    visibility_timeout_seconds : number
+    batch_size : number
+  })
+  description = "SQS config"
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "Tags"
+}
+
+locals {
+  sns_topics = compact(
+    split(
+      ",",
+      chomp(
+        replace(lookup(var.sqs_config, "sns_topic_arn", ""), "\n", ""),
+      ),
+    ),
+  )
 }
 
 resource "aws_sqs_queue" "sqs-deadletter" {
-  count = "${var.enable}"
-  name  = "${lookup(var.sqs_config, "sqs_name")}-dlq"
+  count = local.enable_count
+  name  = "${var.sqs_config.sqs_name}-dlq"
 
-  tags = "${var.tags}"
+  tags = var.tags
 }
 
 resource "aws_sqs_queue" "sqs" {
-  count                      = "${var.enable}"
-  name                       = "${lookup(var.sqs_config, "sqs_name")}"
-  visibility_timeout_seconds = "${lookup(var.sqs_config, "visibility_timeout_seconds")}"
+  count                      = local.enable_count
+  name                       = var.sqs_config.sqs_name
+  visibility_timeout_seconds = var.sqs_config.visibility_timeout_seconds
 
   redrive_policy = <<EOF
 {
@@ -35,16 +58,22 @@ resource "aws_sqs_queue" "sqs" {
 }
 EOF
 
-  tags = "${var.tags}"
+
+  tags = var.tags
+}
+
+locals {
+  setup_sns_subscription_iam_policy = local.enable_count && length(var.sqs_config.sns_topics) != 0 ? 1 : 0
+  sns_topic_subscriptions_count     = local.enable_count * length(var.sqs_config.sns_topics)
 }
 
 data "aws_iam_policy_document" "SendMessage" {
-  count = "${var.enable}"
+  count = local.setup_sns_subscription_iam_policy
 
   statement {
     effect    = "Allow"
-    actions   = "${list("SQS:SendMessage")}"
-    resources = ["${element(aws_sqs_queue.sqs.*.arn, 0)}"]
+    actions   = ["SQS:SendMessage"]
+    resources = [element(aws_sqs_queue.sqs.*.arn, 0)]
 
     principals {
       type        = "AWS"
@@ -54,39 +83,40 @@ data "aws_iam_policy_document" "SendMessage" {
     condition {
       test     = "ForAnyValue:ArnLike"
       variable = "aws:SourceArn"
-      values   = ["${local.sns_topics}"]
+      values   = var.sqs_config.sns_topics
     }
   }
 }
 
 resource "aws_sqs_queue_policy" "SendMessage" {
-  count     = "${var.enable * length(local.sns_topics) >= 1 ? 1 : 0}"
-  queue_url = "${element(aws_sqs_queue.sqs.*.id, 0)}"
+  count     = local.setup_sns_subscription_iam_policy
+  queue_url = element(aws_sqs_queue.sqs.*.id, 0)
 
-  policy = "${data.aws_iam_policy_document.SendMessage.json}"
+  policy = data.aws_iam_policy_document.SendMessage[0].json
 }
 
-resource aws_sns_topic_subscription "to-sqs" {
-  count     = "${var.enable * length(local.sns_topics)}"
+resource "aws_sns_topic_subscription" "to-sqs" {
+  count     = local.sns_topic_subscriptions_count
   protocol  = "sqs"
-  topic_arn = "${trimspace(element(local.sns_topics, count.index))}"
-  endpoint  = "${element(aws_sqs_queue.sqs.*.arn, 0)}"
+  topic_arn = trimspace(element(var.sqs_config.sns_topics, count.index))
+  endpoint  = element(aws_sqs_queue.sqs.*.arn, 0)
 }
 
 resource "aws_lambda_event_source_mapping" "event_source_mapping" {
-  count            = "${var.enable}"
-  batch_size       = "${lookup(var.sqs_config, "batch_size")}"
-  event_source_arn = "${element(aws_sqs_queue.sqs.*.arn, 0)}"
+  count            = local.enable_count
+  batch_size       = var.sqs_config.batch_size
+  event_source_arn = element(aws_sqs_queue.sqs.*.arn, 0)
   enabled          = true
-  function_name    = "${var.lambda_function_arn}"
+  function_name    = var.lambda_function_arn
 }
 
 output "dlq-id" {
-  description = "DLQ endpoint"
-  value       = "${element(concat(aws_sqs_queue.sqs-deadletter.*.id, list("")), 0)}"
+  description = "Dead letter queue endpoint"
+  value       = var.enable ? aws_sqs_queue.sqs-deadletter.*.id : ""
 }
 
 output "dlq-arn" {
-  description = "DLQ ARN"
-  value       = "${element(concat(aws_sqs_queue.sqs-deadletter.*.arn, list("")), 0)}"
+  description = "Dead letter queue arn"
+  value       = var.enable ? aws_sqs_queue.sqs-deadletter.*.arn : ""
 }
+
