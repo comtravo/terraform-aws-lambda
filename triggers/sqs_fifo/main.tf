@@ -86,7 +86,7 @@ resource "aws_sqs_queue" "sqs-deadletter" {
 
 resource "aws_sqs_queue" "sqs" {
   count                      = "${var.enable}"
-  name                       = "${lookup(var.sqs_config, "sqs_name")}"
+  name                       = "${lookup(var.sqs_config, "sqs_name")}.fifo"
   visibility_timeout_seconds = "${lookup(var.sqs_config, "visibility_timeout_seconds")}"
   fifo_queue                 = true
 
