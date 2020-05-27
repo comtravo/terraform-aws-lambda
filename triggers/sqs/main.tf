@@ -1,5 +1,5 @@
 /**
-* # Terraform AWS module for AWS Lambda
+* # Trigger plugin for the AWS Lambda module
 *
 * ## Introduction
 * Allow this lambda to be triggered by SQS and optionally subscribe to SNS topics
