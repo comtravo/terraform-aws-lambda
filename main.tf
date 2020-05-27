@@ -1,3 +1,19 @@
+/**
+* # Terraform AWS module for AWS Lambda
+*
+* ## Introduction
+* This module creates an AWS lambda and all the related resources. It is a complete re-write of our internal terraform lambda module and all functionality has not yet been tested.
+*
+* ## Authors
+*
+* Module managed by [Comtravo](https://github.com/comtravo).
+*
+* ## License
+*
+* MIT Licensed. See LICENSE for full details.
+*/
+
+
 # Create the lambda function
 resource "aws_lambda_function" "lambda" {
   filename                       = var.file_name
