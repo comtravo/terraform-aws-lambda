@@ -51,7 +51,7 @@ resource "aws_cloudwatch_log_group" "lambda" {
 }
 
 module "triggered-by-cloudwatch-event-schedule" {
-  enable = lookup(var.trigger, "type", "") == "cloudwatch-event-schedule" ? 1 : 0
+  enable = contains(local.allowed_triggers, "cloudwatch-event-schedule")
 
   source = "./triggers/cloudwatch_event_schedule/"
 
@@ -65,7 +65,7 @@ module "triggered-by-cloudwatch-event-schedule" {
 }
 
 module "triggered-by-cloudwatch-event-trigger" {
-  enable = lookup(var.trigger, "type", "") == "cloudwatch-event-trigger" ? 1 : 0
+  enable = contains(local.allowed_triggers, "cloudwatch-event-trigger")
 
   source = "./triggers/cloudwatch_event_trigger/"
 
@@ -79,7 +79,7 @@ module "triggered-by-cloudwatch-event-trigger" {
 }
 
 module "triggered-by-step-function" {
-  enable = lookup(var.trigger, "type", "") == "step-function" ? 1 : 0
+  enable = contains(local.allowed_triggers, "step-function")
 
   source = "./triggers/step_function/"
 
@@ -88,7 +88,7 @@ module "triggered-by-step-function" {
 }
 
 module "triggered-by-api-gateway" {
-  enable = lookup(var.trigger, "type", "") == "api-gateway" ? 1 : 0
+  enable = contains(local.allowed_triggers, "api-gateway")
 
   source = "./triggers/api_gateway/"
 
@@ -96,7 +96,7 @@ module "triggered-by-api-gateway" {
 }
 
 module "triggered-by-cognito-idp" {
-  enable = lookup(var.trigger, "type", "") == "cognito-idp" ? 1 : 0
+  enable = contains(local.allowed_triggers, "cognito-idp")
 
   source = "./triggers/cognito_idp/"
 
@@ -104,7 +104,7 @@ module "triggered-by-cognito-idp" {
 }
 
 module "triggered-by-cloudwatch-logs" {
-  enable = lookup(var.trigger, "type", "") == "cloudwatch-logs" ? 1 : 0
+  enable = contains(local.allowed_triggers, "cloudwatch-logs")
 
   source = "./triggers/cloudwatch_logs/"
 
@@ -113,7 +113,7 @@ module "triggered-by-cloudwatch-logs" {
 }
 
 module "triggered-by-sqs" {
-  enable = lookup(var.trigger, "type", "") == "sqs" ? 1 : 0
+  enable = contains(local.allowed_triggers, "sqs")
 
   source = "./triggers/sqs/"
 
