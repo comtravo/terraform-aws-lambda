@@ -3,19 +3,20 @@
 | Name | Version |
 |------|---------|
 | terraform | >= 0.12 |
+| aws | ~> 2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | n/a |
+| aws | ~> 2.0 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | cloudwatch_log_retention | Enable Cloudwatch logs retention | `number` | `90` | no |
-| cloudwatch_log_subscription | cloudwatch log stream configuration | `map(string)` | `{}` | no |
+| cloudwatch_log_subscription | Cloudwatch log stream configuration | `map(string)` | `{}` | no |
 | description | Lambda function description | `string` | `"Managed by Terraform"` | no |
 | enable_cloudwatch_log_subscription | Enable Cloudwatch log subscription | `bool` | `false` | no |
 | environment | Lambda environment variables | `map(string)` | `{}` | no |

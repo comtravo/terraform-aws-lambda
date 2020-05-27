@@ -74,7 +74,7 @@ variable "trigger" {
 }
 
 variable "cloudwatch_log_subscription" {
-  description = "cloudwatch log stream configuration"
+  description = "Cloudwatch log stream configuration"
   type        = map(string)
   default     = {}
 }
