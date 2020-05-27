@@ -2,7 +2,6 @@ variable "enable" {
   default     = false
   type        = bool
   description = "Enable API Gateway trigger"
-
 }
 
 variable "lambda_function_arn" {

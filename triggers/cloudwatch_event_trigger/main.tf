@@ -1,33 +1,42 @@
 variable "enable" {
-  default = 0
+  default     = false
+  type        = bool
+  description = "Enable module"
 }
 
 variable "event_config" {
-  default = {}
-  type    = "map"
+  type = object({
+    name : string
+    description : string
+    event_pattern : string
+  })
+  description = "Cloudwatch event configuration"
 }
 
-variable "lambda_function_arn" {}
+variable "lambda_function_arn" {
+  type        = string
+  description = "Lambda function arn"
+}
 
 resource "aws_cloudwatch_event_rule" "event_rule" {
-  count       = "${var.enable}"
-  name        = "${lookup(var.event_config, "name")}"
-  description = "${lookup(var.event_config, "description")}"
-
-  event_pattern = "${lookup(var.event_config, "event_pattern")}"
+  count         = var.enable
+  name          = var.event_config.name
+  description   = var.event_config.description
+  event_pattern = var.event_config.event_pattern
 }
 
 resource "aws_cloudwatch_event_target" "lambda" {
-  count = "${var.enable}"
-  rule  = "${aws_cloudwatch_event_rule.event_rule.name}"
-  arn   = "${var.lambda_function_arn}"
+  count = var.enable
+  rule  = aws_cloudwatch_event_rule.event_rule[0].name
+  arn   = var.lambda_function_arn
 }
 
 resource "aws_lambda_permission" "invoke-from-events" {
-  count         = "${var.enable}"
+  count         = var.enable
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
-  function_name = "${var.lambda_function_arn}"
+  function_name = var.lambda_function_arn
   principal     = "events.amazonaws.com"
-  source_arn    = "${aws_cloudwatch_event_rule.event_rule.arn}"
+  source_arn    = aws_cloudwatch_event_rule.event_rule[0].arn
 }
+
