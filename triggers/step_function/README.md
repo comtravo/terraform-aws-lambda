@@ -1,3 +1,8 @@
+# Terraform AWS module for AWS Lambda
+
+## Introduction  
+Allow this lambda to be triggered by Step functions
+
 ## Requirements
 
 | Name | Version |

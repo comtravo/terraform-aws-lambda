@@ -1,3 +1,10 @@
+/**
+* # Terraform AWS module for AWS Lambda
+*
+* ## Introduction
+* Allow this lambda to be triggered by Step functions
+*/
+
 variable "enable" {
   default     = false
   type        = bool

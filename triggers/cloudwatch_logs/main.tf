@@ -1,3 +1,10 @@
+/**
+* # Terraform AWS module for AWS Lambda
+*
+* ## Introduction
+* Allow this lambda to be triggered by Cloudwatch logs
+*/
+
 variable "enable" {
   default     = false
   type        = bool
