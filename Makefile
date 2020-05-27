@@ -14,4 +14,5 @@ lint:
 
 
 generate-docs: fmt lint
-	@$(shell $(GENERATE_DOCS_COMMAND))
+	@$(GENERATE_DOCS_COMMAND)
+	@find triggers -type d -maxdepth 1 -not -path 'triggers' -exec sh -c 'cd {} && terraform-docs --sort-inputs-by-required markdown . > README.md' ';'
