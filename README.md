@@ -29,9 +29,8 @@ MIT Licensed. See LICENSE for full details.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | cloudwatch_log_retention | Enable Cloudwatch logs retention | `number` | `90` | no |
-| cloudwatch_log_subscription | Cloudwatch log stream configuration | `map(string)` | `{}` | no |
+| cloudwatch_log_subscription | Cloudwatch log stream configuration | <pre>object({<br>    enable : bool<br>    filter_pattern : string<br>    destination_arn : string<br>  })</pre> | <pre>{<br>  "destination_arn": null,<br>  "enable": false,<br>  "filter_pattern": null<br>}</pre> | no |
 | description | Lambda function description | `string` | `"Managed by Terraform"` | no |
-| enable_cloudwatch_log_subscription | Enable Cloudwatch log subscription | `bool` | `false` | no |
 | environment | Lambda environment variables | `map(string)` | `{}` | no |
 | file_name | Lambda function filename name | `string` | n/a | yes |
 | function_name | Lambda function name | `string` | n/a | yes |
