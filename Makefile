@@ -1,7 +1,7 @@
 #!make
 
 SHELL:=bash
-GENERATE_DOCS_COMMAND:=terraform-docs markdown --no-escape . > README.md
+GENERATE_DOCS_COMMAND:=terraform-docs --sort-inputs-by-required markdown . > README.md
 TRIGGERS:=$(shell find triggers -type d -maxdepth 1 -not -path 'triggers')
 
 fmt:
