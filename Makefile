@@ -10,4 +10,5 @@ lint:
 
 
 generate-docs: fmt lint
-	@$(shell terraform-docs markdown --no-escape . > README.md)
+	# @$(shell terraform-docs markdown --no-escape . > README.md)
+	@$(shell for i in `find triggers -type d -maxdepth 2 -not -path 'triggers' -not -path '**/.terraform' -print`; do cd $i && terraform-docs markdown --no-escape . > README.md && cd -; done)

@@ -1,68 +1,81 @@
 variable "file_name" {
-  description = "lambda function filename name"
+  description = "Lambda function filename name"
+  type        = string
 }
 
 variable "layers" {
   description = "List of layers for this lambda function"
-  type        = "list"
+  type        = list(string)
   default     = []
 }
 
 variable "function_name" {
-  description = "lambda function name"
+  description = "Lambda function name"
+  type        = string
 }
 
 variable "handler" {
-  description = "lambda function handler"
+  description = "Lambda function handler"
+  type        = string
 }
 
 variable "role" {
-  description = "lambda function role"
+  description = "Lambda function role"
+  type        = string
 }
 
 variable "description" {
-  description = "lambda function description"
+  description = "Lambda function description"
   default     = "Managed by Terraform"
+  type        = string
 }
 
 variable "memory_size" {
-  description = "lambda function memory size"
+  description = "Lambda function memory size"
   default     = 128
+  type        = number
 }
 
 variable "runtime" {
-  description = "lambda function runtime"
+  description = "Lambda function runtime"
   default     = "nodejs12.x"
+  type        = string
 }
 
 variable "timeout" {
-  description = "lambda function runtime"
+  description = "Lambda function runtime"
   default     = 300
+  type        = number
 }
 
 variable "publish" {
   description = "Publish lambda function"
   default     = false
+  type        = bool
 }
 
 variable "vpc_config" {
-  type = "map"
+  description = "Lambda VPC configuration"
+  type = object({
+    subnet_ids : list(string)
+    security_group_ids : list(string)
+  })
 }
 
 variable "environment" {
-  description = "lambda environment variables"
-  type        = "map"
+  description = "Lambda environment variables"
+  type        = map(string)
   default     = {}
 }
 
 variable "trigger" {
   description = "trigger configuration for this lambda function"
-  type        = "map"
+  type        = map(string)
 }
 
 variable "cloudwatch_log_subscription" {
   description = "cloudwatch log stream configuration"
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
@@ -74,35 +87,44 @@ variable "tags" {
 variable "reserved_concurrent_executions" {
   description = "Reserved concurrent executions  for this lambda function"
   default     = -1
+  type        = number
 }
 
 variable "region" {
   description = "AWS region"
+  type        = string
 }
 
 variable "enable_cloudwatch_log_subscription" {
-  default = false
+  description = "Enable Cloudwatch log subscription"
+  default     = false
+  type        = bool
 }
 
 variable "cloudwatch_log_retention" {
-  default = 90
+  description = "Enable Cloudwatch logs retention"
+  default     = 90
+  type        = number
 }
 
 locals {
   _tags = {
-    Name        = "${var.function_name}"
-    environment = "${terraform.workspace}"
+    Name        = var.function_name
+    environment = terraform.workspace
   }
 }
 
 locals {
-  source_code_hash = "${base64sha256(file(var.file_name))}"
+  source_code_hash = filebase64sha256(var.file_name)
 
-  tags                 = "${merge(var.tags, local._tags)}"
+  tags                 = merge(var.tags, local._tags)
   cloudwatch_log_group = "/aws/lambda/${var.function_name}"
 }
 
 variable "tracing_config" {
+  type = object({
+    mode : string
+  })
   default = {
     mode = "PassThrough"
   }
