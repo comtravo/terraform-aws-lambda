@@ -113,13 +113,18 @@ resource "aws_lambda_event_source_mapping" "event_source_mapping" {
   function_name    = var.lambda_function_arn
 }
 
-output "dlq-id" {
-  description = "Dead letter queue endpoint"
-  value       = var.enable ? aws_sqs_queue.sqs-deadletter.*.id : ""
+output "dlq" {
+  description = "Dead letter queue details"
+  value = {
+    id  = var.enable ? aws_sqs_queue.sqs-deadletter.*.id : ""
+    arn = var.enable ? aws_sqs_queue.sqs-deadletter.*.arn : ""
+  }
 }
 
-output "dlq-arn" {
-  description = "Dead letter queue arn"
-  value       = var.enable ? aws_sqs_queue.sqs-deadletter.*.arn : ""
+output "queue" {
+  description = "SQS queue details"
+  value = {
+    id  = var.enable ? aws_sqs_queue.sqs.*.id : ""
+    arn = var.enable ? aws_sqs_queue.sqs.*.arn : ""
+  }
 }
-
