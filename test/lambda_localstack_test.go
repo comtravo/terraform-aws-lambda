@@ -121,8 +121,38 @@ func TestLambda_cloudwatchEventSchedule(t *testing.T) {
 		"handler":       "index.handler",
 		"role":          function_name,
 		"trigger": map[string]string{
-			"type": "cloudwatch-event-schedule",
+			"type":                "cloudwatch-event-schedule",
 			"schedule_expression": "cron(0 1 * * ? *)",
+		},
+		"environment": map[string]string{
+			"LOREM": "ipsum",
+		},
+		"region": "us-east-1",
+		"tags": map[string]string{
+			"Foo": function_name,
+		},
+	}
+
+	terraformOptions := SetupTestCase(t, terraformModuleVars)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	// defer terraform.Destroy(t, terraformOptions)
+
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+}
+
+func TestLambda_cloudwatchEventTrigger(t *testing.T) {
+	t.Parallel()
+
+	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
+
+	terraformModuleVars := map[string]interface{}{
+		"file_name":     "foo.zip",
+		"function_name": function_name,
+		"handler":       "index.handler",
+		"role":          function_name,
+		"trigger": map[string]string{
+			"type":          "cloudwatch-event-trigger",
+			"event_pattern": "{}",
 		},
 		"environment": map[string]string{
 			"LOREM": "ipsum",
