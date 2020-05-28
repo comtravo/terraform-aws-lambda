@@ -1,3 +1,58 @@
+/**
+ * # Terraform AWS Lambda module with various triggers.
+ *
+ * ##  Usage:
+ * For detailed examples: check the [triggers](./triggers) folder for triggers specific examples.
+ *
+ * ## Generic example:
+ *```hcl
+ *module "lambda-offer-email" {
+ *  source = "github.com/comtravo/terraform-aws-lambda?ref=2.4.0"
+ *
+ *  ################################################
+ *  #        LAMBDA FUNCTION CONFIGURATION         #
+ *  file_name = "${path.root}/../artifacts/offer-email.zip"
+ *
+ *  function_name = "lambda-offer-email-${terraform.workspace}"
+ *  handler       = "index.offerEmails"
+ *  memory_size   = 1024
+ *
+ *  trigger {
+ *    type          = "sqs"
+ *    sns_topic_arn = "arn:aws:sns:${var.region}:${var.ct_account_id}:lambda-offer-${terraform.workspace}"
+ *  }
+ *
+ *  environment = "${merge(
+ *    local.ct_lambda_commons,
+ *    map(
+ *      "FOO", "baz",
+ *      "LOREM", "ipsum",
+ *    )
+ *  )}"
+ *
+ *  enable_cloudwatch_log_subscription = true
+ *
+ *  cloudwatch_log_subscription {
+ *    destination_arn = "${module.lambda-elk-logging.lambda_arn}"
+ *    filter_pattern  = "[timestamp=*Z, request_id=\"*-*\", logLevel=*, event]"
+ *  }
+ *
+ *  tracing_config = "${var.lambda_xray_config}"
+ *
+ *  #                                              #
+ *  ################################################
+ *
+ *  region = "${var.region}"
+ *  role   = "${aws_iam_role.lambda.arn}"
+ *  vpc_config {
+ *    subnet_ids         = ["${module.main_vpc.private_subnets}"]
+ *    security_group_ids = ["${module.main_vpc.vpc_default_sg}"]
+ *  }
+ *}
+ *```
+ *
+ */
+
 # Create the lambda function
 resource "aws_lambda_function" "lambda" {
   filename                       = "${var.file_name}"
@@ -98,6 +153,23 @@ module "triggered-by-sqs" {
   enable = "${lookup(var.trigger, "type", "") == "sqs" ? 1 : 0}"
 
   source = "./triggers/sqs/"
+
+  lambda_function_arn = "${aws_lambda_function.lambda.arn}"
+
+  sqs_config = {
+    sns_topic_arn              = "${lookup(var.trigger, "sns_topic_arn", "")}"
+    sqs_name                   = "${var.function_name}"
+    visibility_timeout_seconds = "${var.timeout + 5}"
+    batch_size                 = "${lookup(var.trigger, "batch_size", 1)}"
+  }
+
+  tags = "${local.tags}"
+}
+
+module "triggered-by-sqs-fifo" {
+  enable = "${lookup(var.trigger, "type", "") == "sqs-fifo" ? 1 : 0}"
+
+  source = "./triggers/sqs_fifo/"
 
   lambda_function_arn = "${aws_lambda_function.lambda.arn}"
 

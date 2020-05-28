@@ -15,7 +15,7 @@
  *  memory_size   = 1024
  *
  *  trigger {
- *    type          = "sqs"
+ *    type          = "sqs-fifo"
  *    sns_topic_arn = "arn:aws:sns:${var.region}:${var.ct_account_id}:lambda-offer-${terraform.workspace}"
  *  }
  *
@@ -73,17 +73,23 @@ locals {
   sns_topics = "${compact(split(",", chomp(replace(lookup(var.sqs_config, "sns_topic_arn", ""), "\n", ""))))}"
 }
 
+locals {
+  sns_topics_present = "${length(local.sns_topics) > 0 ? 1 : 0}"
+}
+
 resource "aws_sqs_queue" "sqs-deadletter" {
-  count = "${var.enable}"
-  name  = "${lookup(var.sqs_config, "sqs_name")}-dlq"
+  count      = "${var.enable}"
+  name       = "${lookup(var.sqs_config, "sqs_name")}-dlq.fifo"
+  fifo_queue = true
 
   tags = "${var.tags}"
 }
 
 resource "aws_sqs_queue" "sqs" {
   count                      = "${var.enable}"
-  name                       = "${lookup(var.sqs_config, "sqs_name")}"
+  name                       = "${lookup(var.sqs_config, "sqs_name")}.fifo"
   visibility_timeout_seconds = "${lookup(var.sqs_config, "visibility_timeout_seconds")}"
+  fifo_queue                 = true
 
   redrive_policy = <<EOF
 {
@@ -117,14 +123,14 @@ data "aws_iam_policy_document" "SendMessage" {
 }
 
 resource "aws_sqs_queue_policy" "SendMessage" {
-  count     = "${var.enable * length(local.sns_topics) >= 1 ? 1: 0}"
+  count     = "${var.enable * local.sns_topics_present}"
   queue_url = "${element(aws_sqs_queue.sqs.*.id, 0)}"
 
   policy = "${data.aws_iam_policy_document.SendMessage.json}"
 }
 
 resource aws_sns_topic_subscription "to-sqs" {
-  count     = "${var.enable * length(local.sns_topics)}"
+  count     = "${var.enable * local.sns_topics_present}"
   protocol  = "sqs"
   topic_arn = "${trimspace(element(local.sns_topics, count.index))}"
   endpoint  = "${element(aws_sqs_queue.sqs.*.arn, 0)}"
@@ -139,12 +145,12 @@ resource "aws_lambda_event_source_mapping" "event_source_mapping" {
 }
 
 output "dlq_id" {
-  description = "DLQ ID"
+  description = "Dead Leter Queue endpoint"
   value       = "${element(concat(aws_sqs_queue.sqs-deadletter.*.id, list("")), 0)}"
 }
 
 output "dlq_arn" {
-  description = "DLQ ARN"
+  description = "Dead Letter Queue arn"
   value       = "${element(concat(aws_sqs_queue.sqs-deadletter.*.arn, list("")), 0)}"
 }
 
@@ -154,6 +160,6 @@ output "queue_id" {
 }
 
 output "queue_arn" {
-  description = "SQS ARN"
+  description = "SQS arn"
   value       = "${element(concat(aws_sqs_queue.sqs.*.arn, list("")), 0)}"
 }

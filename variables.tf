@@ -43,10 +43,12 @@ variable "timeout" {
 variable "publish" {
   description = "Publish lambda function"
   default     = false
+  description = "Publish lambda"
 }
 
 variable "vpc_config" {
-  type = "map"
+  type        = "map"
+  description = "VPC configuration for lambda"
 }
 
 variable "environment" {
@@ -81,11 +83,13 @@ variable "region" {
 }
 
 variable "enable_cloudwatch_log_subscription" {
-  default = false
+  default     = false
+  description = "Enable cloudwatch log subscription"
 }
 
 variable "cloudwatch_log_retention" {
-  default = 90
+  default     = 90
+  description = "Cloudwatch log retention"
 }
 
 locals {
