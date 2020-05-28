@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"path"
 	"regexp"
+	// "strconv"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/files"
@@ -40,12 +41,7 @@ func TestLambda_apiGateway(t *testing.T) {
 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
 	// defer terraform.Destroy(t, terraformOptions)
 
-	terraformApplyOutput := terraform.InitAndApply(t, terraformOptions)
-	resourceCount := terraform.GetResourceCount(t, terraformApplyOutput)
-	require.Greater(t, resourceCount.Add, 0)
-	require.Equal(t, resourceCount.Change, 0)
-	require.Equal(t, resourceCount.Destroy, 0)
-	ValidateTerraformModuleOutputs(t, terraformOptions)
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
 	require.Regexp(t, regexp.MustCompile("arn:aws:apigateway:us-east-1:lambda:path/*"), terraform.Output(t, terraformOptions, "invoke_arn"))
 }
 
@@ -76,13 +72,42 @@ func TestLambda_layers(t *testing.T) {
 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
 	// defer terraform.Destroy(t, terraformOptions)
 
-	terraformApplyOutput := terraform.InitAndApply(t, terraformOptions)
-	resourceCount := terraform.GetResourceCount(t, terraformApplyOutput)
-	require.Greater(t, resourceCount.Add, 0)
-	require.Equal(t, resourceCount.Change, 0)
-	require.Equal(t, resourceCount.Destroy, 0)
-	ValidateTerraformModuleOutputs(t, terraformOptions)
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+
 	require.Regexp(t, regexp.MustCompile("arn:aws:apigateway:us-east-1:lambda:path/*"), terraform.Output(t, terraformOptions, "invoke_arn"))
+}
+
+func TestLambda_publish(t *testing.T) {
+	t.Parallel()
+
+	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
+
+	terraformModuleVars := map[string]interface{}{
+		"file_name":     "foo.zip",
+		"function_name": function_name,
+		"handler":       "index.handler",
+		"role":          function_name,
+		"publish":       true,
+		"layers":        []string{"arn:aws:lambda:us-east-1:284387765956:layer:BetterSqlite3:8"},
+		"trigger": map[string]string{
+			"type": "api-gateway",
+		},
+		"environment": map[string]string{
+			"LOREM": "ipsum",
+		},
+		"region": "us-east-1",
+		"tags": map[string]string{
+			"Foo": function_name,
+		},
+	}
+
+	terraformOptions := SetupTestCase(t, terraformModuleVars)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	// defer terraform.Destroy(t, terraformOptions)
+
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+	require.Equal(t, "1", terraform.Output(t, terraformOptions, "version"))
+	require.Regexp(t, terraform.Output(t, terraformOptions, "qualified_arn"), fmt.Sprintf("arn:aws:lambda:us-east-1:000000000000:function:%s:1", terraformOptions.Vars["function_name"]))
 }
 
 func SetupTestCase(t *testing.T, terraformModuleVars map[string]interface{}) *terraform.Options {
@@ -133,6 +158,13 @@ func SetupTestCase(t *testing.T, terraformModuleVars map[string]interface{}) *te
 // 	terraformOptions.Vars["external_elastic_ips"] = external_elastic_ips
 // }
 
-func ValidateTerraformModuleOutputs(t *testing.T, terraformOptions *terraform.Options) {
+func TerraformApplyAndValidateOutputs(t *testing.T, terraformOptions *terraform.Options) {
+	terraformApplyOutput := terraform.InitAndApply(t, terraformOptions)
+	resourceCount := terraform.GetResourceCount(t, terraformApplyOutput)
+
+	require.Greater(t, resourceCount.Add, 0)
+	require.Equal(t, resourceCount.Change, 0)
+	require.Equal(t, resourceCount.Destroy, 0)
+
 	require.Regexp(t, terraform.Output(t, terraformOptions, "arn"), fmt.Sprintf("arn:aws:lambda:us-east-1:000000000000:function:%s", terraformOptions.Vars["function_name"]))
 }
