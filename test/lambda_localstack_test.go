@@ -89,6 +89,40 @@ func TestLambda_apiGateway(t *testing.T) {
 	require.Equal(t, resourceCount.Destroy, 0)
 }
 
+func TestLambda_layers(t *testing.T) {
+	t.Parallel()
+
+	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
+
+	terraformModuleVars := map[string]interface{}{
+		"file_name":     "foo.zip",
+		"function_name": function_name,
+		"handler":       "index.handler",
+		"role":          function_name,
+		"layers":        []string{"arn:aws:lambda:us-east-1:284387765956:layer:BetterSqlite3:8"},
+		"trigger": map[string]string{
+			"type": "api-gateway",
+		},
+		"environment": map[string]string{
+			"LOREM": "ipsum",
+		},
+		"region": "us-east-1",
+		"tags": map[string]string{
+			"Foo": function_name,
+		},
+	}
+
+	terraformOptions := SetupTestCase(t, terraformModuleVars)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	// defer terraform.Destroy(t, terraformOptions)
+
+	terraformApplyOutput := terraform.InitAndApply(t, terraformOptions)
+	resourceCount := terraform.GetResourceCount(t, terraformApplyOutput)
+	require.Greater(t, resourceCount.Add, 0)
+	require.Equal(t, resourceCount.Change, 0)
+	require.Equal(t, resourceCount.Destroy, 0)
+}
+
 func SetupTestCase(t *testing.T, terraformModuleVars map[string]interface{}) *terraform.Options {
 	testRunFolder, err := files.CopyTerraformFolderToTemp("../", t.Name())
 	require.NoError(t, err)
