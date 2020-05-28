@@ -20,8 +20,8 @@ Allow this lambda to be triggered by SQS and optionally subscribe to SNS topics
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| lambda\_function\_arn | Lambda function arn | `string` | n/a | yes |
-| sqs\_config | SQS config | <pre>object({<br>    sns_topics : list(string)<br>    fifo : bool<br>    sqs_name : string<br>    visibility_timeout_seconds : number<br>    batch_size : number<br>  })</pre> | n/a | yes |
+| lambda_function_arn | Lambda function arn | `string` | n/a | yes |
+| sqs_config | SQS config | <pre>object({<br>    sns_topics : string<br>    fifo : bool<br>    sqs_name : string<br>    visibility_timeout_seconds : number<br>    batch_size : number<br>  })</pre> | n/a | yes |
 | tags | Tags | `map(string)` | n/a | yes |
 | enable | Enable module | `bool` | `false` | no |
 

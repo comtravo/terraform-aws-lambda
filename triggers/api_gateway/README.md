@@ -20,7 +20,7 @@ Allow this lambda to be triggered by API Gateways
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| lambda\_function\_arn | Lambda arn | `string` | n/a | yes |
+| lambda_function_arn | Lambda arn | `string` | n/a | yes |
 | enable | Enable API Gateway trigger | `bool` | `false` | no |
 
 ## Outputs

@@ -94,6 +94,7 @@ variable "cloudwatch_log_subscription" {
 variable "tags" {
   description = "Tags for this lambda function"
   default     = {}
+  type        = map(string)
 }
 
 variable "reserved_concurrent_executions" {

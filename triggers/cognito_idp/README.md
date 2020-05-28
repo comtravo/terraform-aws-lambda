@@ -20,7 +20,7 @@ Allow this lambda to be triggered by Cognito IDP
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| lambda\_function\_arn | Lambda function arn | `string` | n/a | yes |
+| lambda_function_arn | Lambda function arn | `string` | n/a | yes |
 | enable | Enable module | `bool` | `false` | no |
 
 ## Outputs

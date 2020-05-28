@@ -24,9 +24,9 @@ variable "sqs_config" {
   type = object({
     sns_topics : string
     fifo : bool
-    sqs_name: string
+    sqs_name : string
     visibility_timeout_seconds : number
-    batch_size: number
+    batch_size : number
   })
   description = "SQS config"
 }
@@ -121,7 +121,7 @@ output "dlq" {
   description = "Dead letter queue details"
   value = {
     id  = var.enable ? aws_sqs_queue.sqs-deadletter[0].id : ""
-    url  = var.enable ? aws_sqs_queue.sqs-deadletter[0].id : ""
+    url = var.enable ? aws_sqs_queue.sqs-deadletter[0].id : ""
     arn = var.enable ? aws_sqs_queue.sqs-deadletter[0].arn : ""
   }
 }

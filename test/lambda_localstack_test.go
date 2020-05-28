@@ -73,9 +73,9 @@ func TestLambda_apiGateway(t *testing.T) {
 			"LOREM": "ipsum",
 		},
 		"region": "us-east-1",
-		// "tags": map[string]string{
-		// 	"Foo": function_name,
-		// },
+		"tags": map[string]string{
+			"Foo": function_name,
+		},
 	}
 
 	terraformOptions := SetupTestCase(t, terraformModuleVars)
