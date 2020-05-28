@@ -23,6 +23,7 @@ variable "lambda_function_arn" {
 variable "sqs_config" {
   type = object({
     sns_topics : list(string)
+    fifo : bool
     sqs_name : string
     visibility_timeout_seconds : number
     batch_size : number
@@ -36,26 +37,20 @@ variable "tags" {
 }
 
 locals {
-  sns_topics = compact(
-    split(
-      ",",
-      chomp(
-        replace(lookup(var.sqs_config, "sns_topic_arn", ""), "\n", ""),
-      ),
-    ),
-  )
+  sqs_name     = var.sqs_config.fifo ? "${var.sqs_config.sqs_name}.fifo" : var.sqs_config.sqs_name
+  sqs_dlq_name = var.sqs_config.fifo ? "${var.sqs_config.sqs_name}-dlq.fifo" : "${var.sqs_config.sqs_name}.fifo"
 }
 
 resource "aws_sqs_queue" "sqs-deadletter" {
   count = local.enable_count
-  name  = "${var.sqs_config.sqs_name}-dlq"
+  name  = local.sqs_dlq_name
 
   tags = var.tags
 }
 
 resource "aws_sqs_queue" "sqs" {
   count                      = local.enable_count
-  name                       = var.sqs_config.sqs_name
+  name                       = local.sqs_name
   visibility_timeout_seconds = var.sqs_config.visibility_timeout_seconds
 
   redrive_policy = <<EOF
@@ -64,7 +59,6 @@ resource "aws_sqs_queue" "sqs" {
   "maxReceiveCount": 12
 }
 EOF
-
 
   tags = var.tags
 }
@@ -78,9 +72,11 @@ data "aws_iam_policy_document" "SendMessage" {
   count = local.setup_sns_subscription_iam_policy
 
   statement {
-    effect    = "Allow"
-    actions   = ["SQS:SendMessage"]
-    resources = [element(aws_sqs_queue.sqs.*.arn, 0)]
+    effect  = "Allow"
+    actions = ["SQS:SendMessage"]
+    resources = [
+      element(aws_sqs_queue.sqs.*.arn, 0)
+    ]
 
     principals {
       type        = "AWS"
