@@ -124,6 +124,7 @@ module "triggered-by-sqs" {
     sqs_name                   = var.function_name
     visibility_timeout_seconds = var.timeout + 5
     batch_size                 = lookup(var.trigger, "batch_size", 1)
+    fifo                       = lookup(var.trigger, "fifo", false)
   }
 
   tags = local.tags

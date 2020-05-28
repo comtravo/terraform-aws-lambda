@@ -125,6 +125,7 @@ output "queue" {
   description = "SQS queue details"
   value = {
     id  = var.enable ? aws_sqs_queue.sqs.*.id : ""
+    url = var.enable ? aws_sqs_queue.sqs.*.id : ""
     arn = var.enable ? aws_sqs_queue.sqs.*.arn : ""
   }
 }

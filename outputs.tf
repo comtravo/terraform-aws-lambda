@@ -33,13 +33,13 @@ output "source_code_size" {
   value       = aws_lambda_function.lambda.source_code_size
 }
 
-output "dlq-url" {
-  description = "AWS lambda DLQ URL"
-  value       = module.triggered-by-sqs.dlq-id
+output "dlq" {
+  description = "AWS lambda DLQ details"
+  value       = module.triggered-by-sqs.dlq
 }
 
-output "dlq-arn" {
-  description = "AWS lambda DLQ ARN"
-  value       = module.triggered-by-sqs.dlq-arn
+output "queue" {
+  description = "AWS lambda SQS details"
+  value       = module.triggered-by-sqs.queue
 }
 
