@@ -86,8 +86,8 @@ variable "cloudwatch_log_subscription" {
   })
   default = {
     enable : false
-    filter_pattern : null
-    destination_arn : null
+    filter_pattern : ""
+    destination_arn : ""
   }
 }
 

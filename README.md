@@ -35,7 +35,7 @@ MIT Licensed. See LICENSE for full details.
 | role | Lambda function role | `string` | n/a | yes |
 | trigger | Trigger configuration for this lambda function | `map(string)` | n/a | yes |
 | cloudwatch_log_retention | Enable Cloudwatch logs retention | `number` | `90` | no |
-| cloudwatch_log_subscription | Cloudwatch log stream configuration | <pre>object({<br>    enable : bool<br>    filter_pattern : string<br>    destination_arn : string<br>  })</pre> | <pre>{<br>  "destination_arn": null,<br>  "enable": false,<br>  "filter_pattern": null<br>}</pre> | no |
+| cloudwatch_log_subscription | Cloudwatch log stream configuration | <pre>object({<br>    enable : bool<br>    filter_pattern : string<br>    destination_arn : string<br>  })</pre> | <pre>{<br>  "destination_arn": "",<br>  "enable": false,<br>  "filter_pattern": ""<br>}</pre> | no |
 | description | Lambda function description | `string` | `"Managed by Terraform"` | no |
 | environment | Lambda environment variables | `map(string)` | `{}` | no |
 | layers | List of layers for this lambda function | `list(string)` | `[]` | no |

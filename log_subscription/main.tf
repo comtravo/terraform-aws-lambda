@@ -16,7 +16,7 @@ variable "log_group_name" {
 
 variable "cloudwatch_log_subscription" {
   type = object({
-    cloudwatch_log_subscription : string
+    filter_pattern : string
     destination_arn : string
   })
   description = "Lambda CloudWatch log subscription"

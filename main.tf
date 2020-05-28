@@ -130,16 +130,13 @@ module "triggered-by-sqs" {
   tags = local.tags
 }
 
-# module "cloudwatch-log-subscription" {
-#   enable = var.cloudwatch_log_subscription.enable
+module "cloudwatch-log-subscription" {
+  enable = var.cloudwatch_log_subscription.enable
 
-#   source = "./log_subscription/"
+  source = "./log_subscription/"
 
-#   lambda_name                 = aws_lambda_function.lambda.function_name
-#   log_group_name              = aws_cloudwatch_log_group.lambda.name
-#   cloudwatch_log_subscription = {
-#     filter_pattern = var.cloudwatch_log_subscription.filter_pattern
-#     destination_arn = var.cloudwatch_log_subscription.destination_arn
-#   }
-# }
+  lambda_name                 = aws_lambda_function.lambda.function_name
+  log_group_name              = aws_cloudwatch_log_group.lambda.name
+  cloudwatch_log_subscription = var.cloudwatch_log_subscription
+}
 
