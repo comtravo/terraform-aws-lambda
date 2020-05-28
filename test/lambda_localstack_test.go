@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestLambda_apiGateway(t *testing.T) {
+func TestLambda_apiGatewayTrigger(t *testing.T) {
 	t.Parallel()
 
 	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
@@ -110,7 +110,7 @@ func TestLambda_publish(t *testing.T) {
 	require.Regexp(t, terraform.Output(t, terraformOptions, "qualified_arn"), fmt.Sprintf("arn:aws:lambda:us-east-1:000000000000:function:%s:1", terraformOptions.Vars["function_name"]))
 }
 
-func TestLambda_cloudwatchEventSchedule(t *testing.T) {
+func TestLambda_cloudwatchEventScheduleTrigger(t *testing.T) {
 	t.Parallel()
 
 	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
@@ -170,7 +170,7 @@ func TestLambda_cloudwatchEventTrigger(t *testing.T) {
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
 }
 
-func TestLambda_stepfunction(t *testing.T) {
+func TestLambda_stepfunctionTrigger(t *testing.T) {
 	t.Parallel()
 
 	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
@@ -199,7 +199,7 @@ func TestLambda_stepfunction(t *testing.T) {
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
 }
 
-func TestLambda_cognitoIDP(t *testing.T) {
+func TestLambda_cognitoIDPTrigger(t *testing.T) {
 	t.Parallel()
 
 	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
