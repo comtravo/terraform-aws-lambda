@@ -78,8 +78,9 @@ locals {
 }
 
 resource "aws_sqs_queue" "sqs-deadletter" {
-  count = "${var.enable}"
-  name  = "${lookup(var.sqs_config, "sqs_name")}-dlq.fifo"
+  count      = "${var.enable}"
+  name       = "${lookup(var.sqs_config, "sqs_name")}-dlq.fifo"
+  fifo_queue = true
 
   tags = "${var.tags}"
 }
