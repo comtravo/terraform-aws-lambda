@@ -5,7 +5,7 @@ package test
 import (
 	"fmt"
 	"path"
-	// "regexp"
+	"regexp"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/files"
@@ -13,48 +13,6 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/require"
 )
-
-// func TestVPCApplyEnabled_basic(t *testing.T) {
-// 	t.Parallel()
-
-// 	vpc_name := fmt.Sprintf("vpc_enabled-%s", random.UniqueId())
-
-// 	terraformModuleVars := map[string]interface{}{
-// 		"enable":             true,
-// 		"vpc_name":           vpc_name,
-// 		"subdomain":          "foo.bar.baz",
-// 		"cidr":               "10.10.0.0/16",
-// 		"availability_zones": []string{"us-east-1a", "us-east-1b", "us-east-1c"},
-// 		"tags": map[string]string{
-// 			"Name": vpc_name,
-// 		},
-// 		"nat_gateway": map[string]string{
-// 			"behavior": "one_nat_per_vpc",
-// 		},
-// 		"enable_dns_support":               true,
-// 		"assign_generated_ipv6_cidr_block": true,
-// 		"private_subnets": map[string]int{
-// 			"number_of_subnets": 3,
-// 			"newbits":           8,
-// 			"netnum_offset":     0,
-// 		},
-// 		"public_subnets": map[string]int{
-// 			"number_of_subnets": 3,
-// 			"newbits":           8,
-// 			"netnum_offset":     100,
-// 		},
-// 	}
-
-// 	terraformOptions := SetupTestCase(t, terraformModuleVars)
-// 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
-// 	// defer terraform.Destroy(t, terraformOptions)
-
-// 	terraform.InitAndApply(t, terraformOptions)
-// 	ValidateTerraformModuleOutputs(t, terraformOptions)
-// 	ValidateNATGateways(t, terraformOptions, 1)
-// 	ValidatePrivateRoutingTables(t, terraformOptions, 1)
-// 	ValidateElasticIps(t, terraformOptions, 1)
-// }
 
 func TestLambda_apiGateway(t *testing.T) {
 	t.Parallel()
@@ -87,6 +45,8 @@ func TestLambda_apiGateway(t *testing.T) {
 	require.Greater(t, resourceCount.Add, 0)
 	require.Equal(t, resourceCount.Change, 0)
 	require.Equal(t, resourceCount.Destroy, 0)
+	ValidateTerraformModuleOutputs(t, terraformOptions)
+	require.Regexp(t, regexp.MustCompile("arn:aws:apigateway:us-east-1:lambda:path/*"), terraform.Output(t, terraformOptions, "invoke_arn"))
 }
 
 func TestLambda_layers(t *testing.T) {
@@ -121,6 +81,8 @@ func TestLambda_layers(t *testing.T) {
 	require.Greater(t, resourceCount.Add, 0)
 	require.Equal(t, resourceCount.Change, 0)
 	require.Equal(t, resourceCount.Destroy, 0)
+	ValidateTerraformModuleOutputs(t, terraformOptions)
+	require.Regexp(t, regexp.MustCompile("arn:aws:apigateway:us-east-1:lambda:path/*"), terraform.Output(t, terraformOptions, "invoke_arn"))
 }
 
 func SetupTestCase(t *testing.T, terraformModuleVars map[string]interface{}) *terraform.Options {
@@ -171,5 +133,6 @@ func SetupTestCase(t *testing.T, terraformModuleVars map[string]interface{}) *te
 // 	terraformOptions.Vars["external_elastic_ips"] = external_elastic_ips
 // }
 
-// func ValidateTerraformModuleOutputs(t *testing.T, terraformOptions *terraform.Options) {
-// }
+func ValidateTerraformModuleOutputs(t *testing.T, terraformOptions *terraform.Options) {
+	require.Regexp(t, terraform.Output(t, terraformOptions, "arn"), fmt.Sprintf("arn:aws:lambda:us-east-1:000000000000:function:%s", terraformOptions.Vars["function_name"]))
+}

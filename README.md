@@ -55,10 +55,7 @@ MIT Licensed. See LICENSE for full details.
 | arn | AWS lambda arn |
 | dlq | AWS lambda Dead Letter Queue details |
 | invoke_arn | AWS lambda invoke_arn |
-| last_modified | AWS lambda last_modified |
 | qualified_arn | AWS lambda qualified_arn |
 | queue | AWS lambda SQS details |
-| source_code_hash | AWS lambda source_code_hash |
-| source_code_size | AWS lambda source_code_size |
 | version | AWS lambda version |
 

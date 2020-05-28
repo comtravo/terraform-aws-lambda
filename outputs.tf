@@ -18,21 +18,6 @@ output "version" {
   value       = aws_lambda_function.lambda.version
 }
 
-output "last_modified" {
-  description = "AWS lambda last_modified"
-  value       = aws_lambda_function.lambda.last_modified
-}
-
-output "source_code_hash" {
-  description = "AWS lambda source_code_hash"
-  value       = aws_lambda_function.lambda.source_code_hash
-}
-
-output "source_code_size" {
-  description = "AWS lambda source_code_size"
-  value       = aws_lambda_function.lambda.source_code_size
-}
-
 output "dlq" {
   description = "AWS lambda Dead Letter Queue details"
   value       = module.triggered-by-sqs.dlq
