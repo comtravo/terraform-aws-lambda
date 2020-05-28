@@ -21,6 +21,7 @@ services:
       - SERVICES=events,iam,logs,lambda,sns,sqs,sts
       - AWS_REGION=us-east-1
       - AWS_DEFAULT_REGION=us-east-1
+      - DEFAULT_REGIONc=us-east-1
       - DOCKER_HOST=unix:///var/run/docker.sock
       - DATA_DIR=/tmp/localstack/data
       - DEBUG=1

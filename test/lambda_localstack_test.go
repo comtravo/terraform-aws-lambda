@@ -210,7 +210,7 @@ func TestLambda_cognitoIDPTrigger(t *testing.T) {
 		"handler":       "index.handler",
 		"role":          function_name,
 		"trigger": map[string]string{
-			"type": "cognito=idp",
+			"type": "cognito-idp",
 		},
 		"environment": map[string]string{
 			"LOREM": "ipsum",
@@ -226,6 +226,87 @@ func TestLambda_cognitoIDPTrigger(t *testing.T) {
 	// defer terraform.Destroy(t, terraformOptions)
 
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
+}
+
+func TestLambda_cloudwatchLogsTrigger(t *testing.T) {
+	t.Parallel()
+
+	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
+
+	terraformModuleVars := map[string]interface{}{
+		"file_name":     "foo.zip",
+		"function_name": function_name,
+		"handler":       "index.handler",
+		"role":          function_name,
+		"trigger": map[string]string{
+			"type": "cloudwatch-logs",
+		},
+		"environment": map[string]string{
+			"LOREM": "ipsum",
+		},
+		"region": "us-east-1",
+		"tags": map[string]string{
+			"Foo": function_name,
+		},
+	}
+
+	terraformOptions := SetupTestCase(t, terraformModuleVars)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+}
+
+func TestLambda_cloudwatchLogsSubscription(t *testing.T) {
+	t.Skip()
+
+	lambdaLogConsumerName := fmt.Sprintf("lambda-%s", random.UniqueId())
+
+	lambdaLogConsumerVars := map[string]interface{}{
+		"file_name":     "foo.zip",
+		"function_name": lambdaLogConsumerName,
+		"handler":       "index.handler",
+		"role":          lambdaLogConsumerName,
+		"trigger": map[string]string{
+			"type": "cloudwatch-logs",
+		},
+		"environment": map[string]string{
+			"LOREM": "ipsum",
+		},
+		"region": "us-east-1",
+		"tags": map[string]string{
+			"Foo": lambdaLogConsumerName,
+		},
+	}
+
+	lambdaLogConsumerOptions := SetupTestCase(t, lambdaLogConsumerVars)
+	t.Logf("Terraform module inputs: %+v", *lambdaLogConsumerOptions)
+	TerraformApplyAndValidateOutputs(t, lambdaLogConsumerOptions)
+
+	lambdaLogGeneratorName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	lambdaLogGeneratorVars := map[string]interface{}{
+		"file_name":     "foo.zip",
+		"function_name": lambdaLogGeneratorName,
+		"handler":       "index.handler",
+		"role":          lambdaLogGeneratorName,
+		"trigger": map[string]string{
+			"type": "cognito-idp",
+		},
+		"cloudwatch_log_subscription": map[string]interface{}{
+			"enable": true,
+			"filter_pattern": "[]",
+			"destination_arn": terraform.Output(t, lambdaLogConsumerOptions, "arn"),
+		},
+		"environment": map[string]string{
+			"LOREM": "ipsum",
+		},
+		"region": "us-east-1",
+		"tags": map[string]string{
+			"Foo": lambdaLogGeneratorName,
+		},
+	}
+
+	lambdaLogGeneratorOptions := SetupTestCase(t, lambdaLogGeneratorVars)
+	t.Logf("Terraform module inputs: %+v", *lambdaLogGeneratorOptions)
+	TerraformApplyAndValidateOutputs(t, lambdaLogGeneratorOptions)
 }
 
 func SetupTestCase(t *testing.T, terraformModuleVars map[string]interface{}) *terraform.Options {
@@ -251,30 +332,6 @@ func SetupTestCase(t *testing.T, terraformModuleVars map[string]interface{}) *te
 	}
 	return terraformOptions
 }
-
-// func SetupExternalElasticIPs(t *testing.T, terraformOptions *terraform.Options) {
-// 	externalElasticIPsFileDestination := path.Join(terraformOptions.TerraformDir, "eip.tf")
-// 	files.CopyFile("fixtures/eip.tf", externalElasticIPsFileDestination)
-// 	t.Logf("Copied eip file to: %s", externalElasticIPsFileDestination)
-
-// 	terraformOptions.Targets = []string{"aws_eip.external"}
-// 	t.Logf("Terraform module inputs for Elastic IPs: %+v", *terraformOptions)
-// 	terraformApplyOutput := terraform.InitAndApply(t, terraformOptions)
-// 	resourceCount := terraform.GetResourceCount(t, terraformApplyOutput)
-// 	external_elastic_ips := terraform.OutputList(t, terraformOptions, "external_elastic_ips")
-
-// 	exptected_external_eip_count := terraformOptions.Vars["external_eip_count"].(int)
-
-// 	require.Equal(t, resourceCount.Add, exptected_external_eip_count)
-// 	require.Equal(t, resourceCount.Change, 0)
-// 	require.Equal(t, resourceCount.Destroy, 0)
-// 	require.Len(t, external_elastic_ips, exptected_external_eip_count)
-
-// 	t.Logf("External elastic IPs created: %s", external_elastic_ips)
-
-// 	terraformOptions.Targets = []string{}
-// 	terraformOptions.Vars["external_elastic_ips"] = external_elastic_ips
-// }
 
 func TerraformApplyAndValidateOutputs(t *testing.T, terraformOptions *terraform.Options) {
 	terraformApplyOutput := terraform.InitAndApply(t, terraformOptions)

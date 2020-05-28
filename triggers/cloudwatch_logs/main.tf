@@ -28,4 +28,3 @@ resource "aws_lambda_permission" "allow_cloudwatch_logs" {
   function_name = var.lambda_function_arn
   principal     = "logs.${var.region}.amazonaws.com"
 }
-
