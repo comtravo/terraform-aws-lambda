@@ -22,13 +22,17 @@ variable "lambda_function_arn" {
 
 variable "sqs_config" {
   type = object({
-    sns_topics : list(string)
+    sns_topics : string
     fifo : bool
-    sqs_name : string
+    sqs_name: string
     visibility_timeout_seconds : number
-    batch_size : number
+    batch_size: number
   })
   description = "SQS config"
+}
+
+locals {
+  sns_topics = "${compact(split(",", chomp(replace(lookup(var.sqs_config, "sns_topics", ""), "\n", ""))))}"
 }
 
 variable "tags" {
@@ -64,8 +68,8 @@ EOF
 }
 
 locals {
-  setup_sns_subscription_iam_policy = local.enable_count && length(var.sqs_config.sns_topics) != 0 ? 1 : 0
-  sns_topic_subscriptions_count     = local.enable_count * length(var.sqs_config.sns_topics)
+  setup_sns_subscription_iam_policy = var.enable && length(local.sns_topics) != 0 ? 1 : 0
+  sns_topic_subscriptions_count     = local.enable_count * length(local.sns_topics)
 }
 
 data "aws_iam_policy_document" "SendMessage" {
@@ -86,7 +90,7 @@ data "aws_iam_policy_document" "SendMessage" {
     condition {
       test     = "ForAnyValue:ArnLike"
       variable = "aws:SourceArn"
-      values   = var.sqs_config.sns_topics
+      values   = local.sns_topics
     }
   }
 }
@@ -101,7 +105,7 @@ resource "aws_sqs_queue_policy" "SendMessage" {
 resource "aws_sns_topic_subscription" "to-sqs" {
   count     = local.sns_topic_subscriptions_count
   protocol  = "sqs"
-  topic_arn = trimspace(element(var.sqs_config.sns_topics, count.index))
+  topic_arn = trimspace(element(local.sns_topics, count.index))
   endpoint  = element(aws_sqs_queue.sqs.*.arn, 0)
 }
 
@@ -116,16 +120,17 @@ resource "aws_lambda_event_source_mapping" "event_source_mapping" {
 output "dlq" {
   description = "Dead letter queue details"
   value = {
-    id  = var.enable ? aws_sqs_queue.sqs-deadletter.*.id : ""
-    arn = var.enable ? aws_sqs_queue.sqs-deadletter.*.arn : ""
+    id  = var.enable ? aws_sqs_queue.sqs-deadletter[0].id : ""
+    url  = var.enable ? aws_sqs_queue.sqs-deadletter[0].id : ""
+    arn = var.enable ? aws_sqs_queue.sqs-deadletter[0].arn : ""
   }
 }
 
 output "queue" {
   description = "SQS queue details"
   value = {
-    id  = var.enable ? aws_sqs_queue.sqs.*.id : ""
-    url = var.enable ? aws_sqs_queue.sqs.*.id : ""
-    arn = var.enable ? aws_sqs_queue.sqs.*.arn : ""
+    id  = var.enable ? aws_sqs_queue.sqs[0].id : ""
+    url = var.enable ? aws_sqs_queue.sqs[0].id : ""
+    arn = var.enable ? aws_sqs_queue.sqs[0].arn : ""
   }
 }

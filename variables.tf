@@ -60,6 +60,10 @@ variable "vpc_config" {
     subnet_ids : list(string)
     security_group_ids : list(string)
   })
+  default = {
+    subnet_ids : []
+    security_group_ids : []
+  }
 }
 
 variable "environment" {
@@ -135,15 +139,14 @@ variable "tracing_config" {
   description = "https://www.terraform.io/docs/providers/aws/r/lambda_function.html"
 }
 
-locals {
-  allowed_triggers = [
-    "api-gateway",
-    "cloudwatch-logs",
-    "cognito-idp",
-    "cloudwatch-event-schedule",
-    "cloudwatch-event-trigger",
-    "sqs",
-    "step-function",
-
-  ]
-}
+# locals {
+#   allowed_triggers = [
+#     "api-gateway",
+#     "cloudwatch-logs",
+#     "cognito-idp",
+#     "cloudwatch-event-schedule",
+#     "cloudwatch-event-trigger",
+#     "sqs",
+#     "step-function",
+#   ]
+# }

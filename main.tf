@@ -51,7 +51,7 @@ resource "aws_cloudwatch_log_group" "lambda" {
 }
 
 module "triggered-by-cloudwatch-event-schedule" {
-  enable = contains(local.allowed_triggers, "cloudwatch-event-schedule")
+  enable = var.trigger["type"] == "cloudwatch-event-schedule"
 
   source = "./triggers/cloudwatch_event_schedule/"
 
@@ -65,7 +65,7 @@ module "triggered-by-cloudwatch-event-schedule" {
 }
 
 module "triggered-by-cloudwatch-event-trigger" {
-  enable = contains(local.allowed_triggers, "cloudwatch-event-trigger")
+  enable = var.trigger["type"] == "cloudwatch-event-trigger"
 
   source = "./triggers/cloudwatch_event_trigger/"
 
@@ -79,7 +79,7 @@ module "triggered-by-cloudwatch-event-trigger" {
 }
 
 module "triggered-by-step-function" {
-  enable = contains(local.allowed_triggers, "step-function")
+  enable = var.trigger["type"] == "step-function"
 
   source = "./triggers/step_function/"
 
@@ -88,7 +88,7 @@ module "triggered-by-step-function" {
 }
 
 module "triggered-by-api-gateway" {
-  enable = contains(local.allowed_triggers, "api-gateway")
+  enable = var.trigger["type"] == "api-gateway"
 
   source = "./triggers/api_gateway/"
 
@@ -96,7 +96,7 @@ module "triggered-by-api-gateway" {
 }
 
 module "triggered-by-cognito-idp" {
-  enable = contains(local.allowed_triggers, "cognito-idp")
+  enable = var.trigger["type"] == "cognito-idp"
 
   source = "./triggers/cognito_idp/"
 
@@ -104,7 +104,7 @@ module "triggered-by-cognito-idp" {
 }
 
 module "triggered-by-cloudwatch-logs" {
-  enable = contains(local.allowed_triggers, "cloudwatch-logs")
+  enable = var.trigger["type"] == "cloudwatch-logs"
 
   source = "./triggers/cloudwatch_logs/"
 
@@ -113,14 +113,14 @@ module "triggered-by-cloudwatch-logs" {
 }
 
 module "triggered-by-sqs" {
-  enable = contains(local.allowed_triggers, "sqs")
+  enable = var.trigger["type"] == "sqs"
 
   source = "./triggers/sqs/"
 
   lambda_function_arn = aws_lambda_function.lambda.arn
 
   sqs_config = {
-    sns_topic_arn              = lookup(var.trigger, "sns_topic_arn", "")
+    sns_topics                 = lookup(var.trigger, "sns_topics", "")
     sqs_name                   = var.function_name
     visibility_timeout_seconds = var.timeout + 5
     batch_size                 = lookup(var.trigger, "batch_size", 1)
@@ -130,13 +130,16 @@ module "triggered-by-sqs" {
   tags = local.tags
 }
 
-module "cloudwatch-log-subscription" {
-  enable = var.cloudwatch_log_subscription.enable
+# module "cloudwatch-log-subscription" {
+#   enable = var.cloudwatch_log_subscription.enable
 
-  source = "./log_subscription/"
+#   source = "./log_subscription/"
 
-  lambda_name                 = aws_lambda_function.lambda.function_name
-  log_group_name              = aws_cloudwatch_log_group.lambda.name
-  cloudwatch_log_subscription = var.cloudwatch_log_subscription
-}
+#   lambda_name                 = aws_lambda_function.lambda.function_name
+#   log_group_name              = aws_cloudwatch_log_group.lambda.name
+#   cloudwatch_log_subscription = {
+#     filter_pattern = var.cloudwatch_log_subscription.filter_pattern
+#     destination_arn = var.cloudwatch_log_subscription.destination_arn
+#   }
+# }
 

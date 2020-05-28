@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  terraform:
+    command: bash
+    volumes:
+      - ./:/go/src/github.com/comtravo/terraform-aws-lambda
+
+  localstack:
+    ports:
+      - 4566:4566
+      - 4584-4597:4584-4597
+      - 4567-4583:4567-4583
+      - 8080:8080
