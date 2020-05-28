@@ -34,7 +34,7 @@ output "source_code_size" {
 }
 
 output "dlq" {
-  description = "AWS lambda DLQ details"
+  description = "AWS lambda Dead Letter Queue details"
   value       = module.triggered-by-sqs.dlq
 }
 
