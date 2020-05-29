@@ -84,93 +84,44 @@ func TestLambda_cloudwatchEventPatternTriggerExample(t *testing.T) {
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
 }
 
-// func TestLambda_cloudwatchEventTrigger(t *testing.T) {
-// 	t.Parallel()
+func TestLambda_stepfunctionTriggerExample(t *testing.T) {
+	t.Parallel()
 
-// 	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/step_function_trigger/"
 
-// 	terraformModuleVars := map[string]interface{}{
-// 		"file_name":     "foo.zip",
-// 		"function_name": function_name,
-// 		"handler":       "index.handler",
-// 		"role":          function_name,
-// 		"trigger": map[string]string{
-// 			"type":          "cloudwatch-event-trigger",
-// 			"event_pattern": "{}",
-// 		},
-// 		"environment": map[string]string{
-// 			"LOREM": "ipsum",
-// 		},
-// 		"region": "us-east-1",
-// 		"tags": map[string]string{
-// 			"Foo": function_name,
-// 		},
-// 	}
+	terraformOptions := SetupExample(t, functionName, exampleDir)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
 
-// 	terraformOptions := SetupTestCase(t, terraformModuleVars)
-// 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
-// 	defer terraform.Destroy(t, terraformOptions)
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+}
 
-// 	TerraformApplyAndValidateOutputs(t, terraformOptions)
-// }
+func TestLambda_cognitoTriggerExample(t *testing.T) {
+	t.Parallel()
 
-// func TestLambda_stepfunctionTrigger(t *testing.T) {
-// 	t.Parallel()
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/cognito_trigger/"
 
-// 	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
+	terraformOptions := SetupExample(t, functionName, exampleDir)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
 
-// 	terraformModuleVars := map[string]interface{}{
-// 		"file_name":     "foo.zip",
-// 		"function_name": function_name,
-// 		"handler":       "index.handler",
-// 		"role":          function_name,
-// 		"trigger": map[string]string{
-// 			"type": "step-function",
-// 		},
-// 		"environment": map[string]string{
-// 			"LOREM": "ipsum",
-// 		},
-// 		"region": "us-east-1",
-// 		"tags": map[string]string{
-// 			"Foo": function_name,
-// 		},
-// 	}
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+}
 
-// 	terraformOptions := SetupTestCase(t, terraformModuleVars)
-// 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
-// 	defer terraform.Destroy(t, terraformOptions)
+func TestLambda_cloudwatchLogsTriggerExample(t *testing.T) {
+	t.Parallel()
 
-// 	TerraformApplyAndValidateOutputs(t, terraformOptions)
-// }
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/cloudwatch_logs_trigger/"
 
-// func TestLambda_cognitoIDPTrigger(t *testing.T) {
-// 	t.Parallel()
+	terraformOptions := SetupExample(t, functionName, exampleDir)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
 
-// 	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
-
-// 	terraformModuleVars := map[string]interface{}{
-// 		"file_name":     "foo.zip",
-// 		"function_name": function_name,
-// 		"handler":       "index.handler",
-// 		"role":          function_name,
-// 		"trigger": map[string]string{
-// 			"type": "cognito-idp",
-// 		},
-// 		"environment": map[string]string{
-// 			"LOREM": "ipsum",
-// 		},
-// 		"region": "us-east-1",
-// 		"tags": map[string]string{
-// 			"Foo": function_name,
-// 		},
-// 	}
-
-// 	terraformOptions := SetupTestCase(t, terraformModuleVars)
-// 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
-// 	defer terraform.Destroy(t, terraformOptions)
-
-// 	TerraformApplyAndValidateOutputs(t, terraformOptions)
-// }
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+}
 
 // func TestLambda_cloudwatchLogsTrigger(t *testing.T) {
 // 	t.Parallel()
