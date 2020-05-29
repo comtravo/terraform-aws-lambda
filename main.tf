@@ -2,7 +2,7 @@
 * # Terraform AWS module for AWS Lambda
 *
 * ## Introduction
-* This module creates an AWS lambda and all the related resources. It is a complete re-write of our internal terraform lambda module and all functionality has not yet been tested.
+* This module creates an AWS lambda and all the related resources. It is a complete re-write of our internal terraform lambda module.
 *
 * ## Authors
 *

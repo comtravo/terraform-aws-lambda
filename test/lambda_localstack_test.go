@@ -39,7 +39,7 @@ func TestLambda_apiGatewayTrigger(t *testing.T) {
 
 	terraformOptions := SetupTestCase(t, terraformModuleVars)
 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
-	// defer terraform.Destroy(t, terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
 
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
 	require.Regexp(t, regexp.MustCompile("arn:aws:apigateway:us-east-1:lambda:path/*"), terraform.Output(t, terraformOptions, "invoke_arn"))
@@ -70,7 +70,7 @@ func TestLambda_layers(t *testing.T) {
 
 	terraformOptions := SetupTestCase(t, terraformModuleVars)
 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
-	// defer terraform.Destroy(t, terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
 
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
 
@@ -103,7 +103,7 @@ func TestLambda_publish(t *testing.T) {
 
 	terraformOptions := SetupTestCase(t, terraformModuleVars)
 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
-	// defer terraform.Destroy(t, terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
 
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
 	require.Equal(t, "1", terraform.Output(t, terraformOptions, "version"))
@@ -135,7 +135,7 @@ func TestLambda_cloudwatchEventScheduleTrigger(t *testing.T) {
 
 	terraformOptions := SetupTestCase(t, terraformModuleVars)
 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
-	// defer terraform.Destroy(t, terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
 
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
 }
@@ -165,7 +165,7 @@ func TestLambda_cloudwatchEventTrigger(t *testing.T) {
 
 	terraformOptions := SetupTestCase(t, terraformModuleVars)
 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
-	// defer terraform.Destroy(t, terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
 
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
 }
@@ -194,7 +194,7 @@ func TestLambda_stepfunctionTrigger(t *testing.T) {
 
 	terraformOptions := SetupTestCase(t, terraformModuleVars)
 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
-	// defer terraform.Destroy(t, terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
 
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
 }
@@ -223,7 +223,7 @@ func TestLambda_cognitoIDPTrigger(t *testing.T) {
 
 	terraformOptions := SetupTestCase(t, terraformModuleVars)
 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
-	// defer terraform.Destroy(t, terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
 
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
 }
