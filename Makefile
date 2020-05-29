@@ -17,7 +17,7 @@ build:
 	@$(DOCKER_COMPOSE) build
 
 test-localstack:
-	@cd test && go test -v -tags=localstack
+	@cd test && go test -tags=localstack
 
 test-all: test-localstack
 
