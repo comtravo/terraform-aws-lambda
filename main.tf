@@ -123,8 +123,8 @@ module "triggered-by-sqs" {
     sns_topics                 = lookup(var.trigger, "sns_topics", "")
     sqs_name                   = var.function_name
     visibility_timeout_seconds = var.timeout + 5
-    batch_size                 = lookup(var.trigger, "batch_size", 1)
-    fifo                       = lookup(var.trigger, "fifo", false)
+    batch_size                 = tonumber(lookup(var.trigger, "batch_size", "1"))
+    fifo                       = tobool(lookup(var.trigger, "fifo", "false"))
   }
 
   tags = local.tags

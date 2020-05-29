@@ -42,7 +42,7 @@ variable "tags" {
 
 locals {
   sqs_name     = var.sqs_config.fifo ? "${var.sqs_config.sqs_name}.fifo" : var.sqs_config.sqs_name
-  sqs_dlq_name = var.sqs_config.fifo ? "${var.sqs_config.sqs_name}-dlq.fifo" : "${var.sqs_config.sqs_name}.fifo"
+  sqs_dlq_name = var.sqs_config.fifo ? "${var.sqs_config.sqs_name}-dlq.fifo" : "${var.sqs_config.sqs_name}-dlq"
 }
 
 resource "aws_sqs_queue" "sqs-deadletter" {

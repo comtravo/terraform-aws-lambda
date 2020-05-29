@@ -255,6 +255,38 @@ func TestLambda_cloudwatchLogsTrigger(t *testing.T) {
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
 }
 
+func TestLambda_sqsTrigger(t *testing.T) {
+	t.Parallel()
+
+	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
+
+	terraformModuleVars := map[string]interface{}{
+		"file_name":     "foo.zip",
+		"function_name": function_name,
+		"handler":       "index.handler",
+		"role":          function_name,
+		"trigger": map[string]interface{}{
+			"type":       "sqs",
+			"batch_size": 10,
+			"fifo":       false,
+		},
+		"environment": map[string]string{
+			"LOREM": "ipsum",
+		},
+		"region": "us-east-1",
+		"tags": map[string]string{
+			"Foo": function_name,
+		},
+	}
+
+	terraformOptions := SetupTestCase(t, terraformModuleVars)
+	defer terraform.Destroy(t, terraformOptions)
+
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+	ValidateSQSTriggerOutputs(t, terraformOptions)
+}
+
 func TestLambda_cloudwatchLogsSubscription(t *testing.T) {
 	t.Skip()
 
@@ -291,8 +323,8 @@ func TestLambda_cloudwatchLogsSubscription(t *testing.T) {
 			"type": "cognito-idp",
 		},
 		"cloudwatch_log_subscription": map[string]interface{}{
-			"enable": true,
-			"filter_pattern": "[]",
+			"enable":          true,
+			"filter_pattern":  "[]",
 			"destination_arn": terraform.Output(t, lambdaLogConsumerOptions, "arn"),
 		},
 		"environment": map[string]string{
@@ -342,4 +374,32 @@ func TerraformApplyAndValidateOutputs(t *testing.T, terraformOptions *terraform.
 	require.Equal(t, resourceCount.Destroy, 0)
 
 	require.Regexp(t, terraform.Output(t, terraformOptions, "arn"), fmt.Sprintf("arn:aws:lambda:us-east-1:000000000000:function:%s", terraformOptions.Vars["function_name"]))
+}
+
+func ValidateSQSTriggerOutputs(t *testing.T, terraformOptions *terraform.Options) {
+	dlq := terraform.OutputMap(t, terraformOptions, "dlq")
+	queue := terraform.OutputMap(t, terraformOptions, "queue")
+
+	expectedDlqName := fmt.Sprintf("%s-dlq", terraformOptions.Vars["function_name"])
+	expectedQueueName := fmt.Sprintf("%s", terraformOptions.Vars["function_name"])
+
+	isFifo := terraformOptions.Vars["trigger"].(map[string]interface{})["fifo"]
+
+	if isFifo == true {
+		expectedDlqName = fmt.Sprintf("%s.fifo", expectedDlqName)
+		expectedQueueName = fmt.Sprintf("%s.fifo", expectedQueueName)
+	}
+
+	require.Equal(t, fmt.Sprintf("arn:aws:sqs:us-east-1:000000000000:%s", expectedDlqName), dlq["arn"])
+	require.Regexp(t, regexp.MustCompile("http://*"), dlq["id"])
+	require.Regexp(t, regexp.MustCompile("http://*"), dlq["url"])
+	require.Equal(t, dlq["id"], dlq["url"])
+
+	require.Equal(t, fmt.Sprintf("arn:aws:sqs:us-east-1:000000000000:%s", expectedQueueName), queue["arn"])
+	require.Regexp(t, regexp.MustCompile("http://*"), queue["id"])
+	require.Regexp(t, regexp.MustCompile("http://*"), queue["url"])
+	require.Equal(t, queue["id"], queue["url"])
+
+	require.NotEqual(t, queue["id"], dlq["id"])
+
 }
