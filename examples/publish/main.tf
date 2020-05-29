@@ -34,15 +34,16 @@ resource "aws_iam_role_policy" "lambda" {
   policy = data.aws_iam_policy_document.policy.json
 }
 
-
-module "api_gatewat_trigger" {
+module "publish" {
 
   source = "../../"
 
   file_name     = "${path.module}/../../test/fixtures/foo.zip"
   function_name = var.function_name
   handler       = "index.handler"
+  publish       = true
   role          = aws_iam_role.lambda.name
+  layers        = ["arn:aws:lambda:us-east-1:284387765956:layer:BetterSqlite3:8"]
   trigger = {
     type = "api-gateway"
   }
@@ -57,31 +58,31 @@ module "api_gatewat_trigger" {
 
 output "arn" {
   description = "AWS lambda arn"
-  value       = module.api_gatewat_trigger.arn
+  value       = module.publish.arn
 }
 
 output "qualified_arn" {
   description = "AWS lambda qualified_arn"
-  value       = module.api_gatewat_trigger.qualified_arn
+  value       = module.publish.qualified_arn
 }
 
 output "invoke_arn" {
   description = "AWS lambda invoke_arn"
-  value       = module.api_gatewat_trigger.invoke_arn
+  value       = module.publish.invoke_arn
 }
 
 output "version" {
   description = "AWS lambda version"
-  value       = module.api_gatewat_trigger.version
+  value       = module.publish.version
 }
 
 output "dlq" {
   description = "AWS lambda Dead Letter Queue details"
-  value       = module.api_gatewat_trigger.dlq
+  value       = module.publish.dlq
 }
 
 output "queue" {
   description = "AWS lambda SQS details"
-  value       = module.api_gatewat_trigger.queue
+  value       = module.publish.queue
 }
 

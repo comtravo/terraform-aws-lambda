@@ -35,7 +35,7 @@ resource "aws_iam_role_policy" "lambda" {
 }
 
 
-module "api_gatewat_trigger" {
+module "cloudwatch_event_pattern_trigger" {
 
   source = "../../"
 
@@ -44,7 +44,8 @@ module "api_gatewat_trigger" {
   handler       = "index.handler"
   role          = aws_iam_role.lambda.name
   trigger = {
-    type = "api-gateway"
+    type                = "cloudwatch-event-trigger"
+    schedule_expression = "{}"
   }
   environment = {
     "LOREM" = "IPSUM"
@@ -57,31 +58,31 @@ module "api_gatewat_trigger" {
 
 output "arn" {
   description = "AWS lambda arn"
-  value       = module.api_gatewat_trigger.arn
+  value       = module.cloudwatch_event_pattern_trigger.arn
 }
 
 output "qualified_arn" {
   description = "AWS lambda qualified_arn"
-  value       = module.api_gatewat_trigger.qualified_arn
+  value       = module.cloudwatch_event_pattern_trigger.qualified_arn
 }
 
 output "invoke_arn" {
   description = "AWS lambda invoke_arn"
-  value       = module.api_gatewat_trigger.invoke_arn
+  value       = module.cloudwatch_event_pattern_trigger.invoke_arn
 }
 
 output "version" {
   description = "AWS lambda version"
-  value       = module.api_gatewat_trigger.version
+  value       = module.cloudwatch_event_pattern_trigger.version
 }
 
 output "dlq" {
   description = "AWS lambda Dead Letter Queue details"
-  value       = module.api_gatewat_trigger.dlq
+  value       = module.cloudwatch_event_pattern_trigger.dlq
 }
 
 output "queue" {
   description = "AWS lambda SQS details"
-  value       = module.api_gatewat_trigger.queue
+  value       = module.cloudwatch_event_pattern_trigger.queue
 }
 

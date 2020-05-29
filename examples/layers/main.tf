@@ -39,11 +39,11 @@ module "layers" {
 
   source = "../../"
 
-  file_name = "${path.module}/../../test/fixtures/foo.zip"
+  file_name     = "${path.module}/../../test/fixtures/foo.zip"
   function_name = var.function_name
-  handler = "index.handler"
-  role = aws_iam_role.lambda.name
-  layers = ["arn:aws:lambda:us-east-1:284387765956:layer:BetterSqlite3:8"]
+  handler       = "index.handler"
+  role          = aws_iam_role.lambda.name
+  layers        = ["arn:aws:lambda:us-east-1:284387765956:layer:BetterSqlite3:8"]
   trigger = {
     type = "api-gateway"
   }
@@ -52,7 +52,7 @@ module "layers" {
   }
   region = "us-east-1"
   tags = {
-    "Foo": var.function_name
+    "Foo" : var.function_name
   }
 }
 
