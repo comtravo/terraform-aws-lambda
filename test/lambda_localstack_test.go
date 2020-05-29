@@ -179,59 +179,19 @@ func TestLambda_sqsFifoSnsTriggerExample(t *testing.T) {
 	ValidateSQSTriggerOutputs(t, terraformOptions, false)
 }
 
-// func TestLambda_cloudwatchLogsSubscription(t *testing.T) {
-// 	t.Skip()
+func TestLambda_cloudwatchLogSubscriptionExample(t *testing.T) {
+	t.Skip()
 
-// 	lambdaLogConsumerName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/cloudwatch_logs_subscription/"
 
-// 	lambdaLogConsumerVars := map[string]interface{}{
-// 		"file_name":     "foo.zip",
-// 		"function_name": lambdaLogConsumerName,
-// 		"handler":       "index.handler",
-// 		"role":          lambdaLogConsumerName,
-// 		"trigger": map[string]string{
-// 			"type": "cloudwatch-logs",
-// 		},
-// 		"environment": map[string]string{
-// 			"LOREM": "ipsum",
-// 		},
-// 		"region": "us-east-1",
-// 		"tags": map[string]string{
-// 			"Foo": lambdaLogConsumerName,
-// 		},
-// 	}
+	terraformOptions := SetupExample(t, functionName, exampleDir)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
 
-// 	lambdaLogConsumerOptions := SetupTestCase(t, lambdaLogConsumerVars)
-// 	t.Logf("Terraform module inputs: %+v", *lambdaLogConsumerOptions)
-// 	TerraformApplyAndValidateOutputs(t, lambdaLogConsumerOptions)
-
-// 	lambdaLogGeneratorName := fmt.Sprintf("lambda-%s", random.UniqueId())
-// 	lambdaLogGeneratorVars := map[string]interface{}{
-// 		"file_name":     "foo.zip",
-// 		"function_name": lambdaLogGeneratorName,
-// 		"handler":       "index.handler",
-// 		"role":          lambdaLogGeneratorName,
-// 		"trigger": map[string]string{
-// 			"type": "cognito-idp",
-// 		},
-// 		"cloudwatch_log_subscription": map[string]interface{}{
-// 			"enable":          true,
-// 			"filter_pattern":  "[]",
-// 			"destination_arn": terraform.Output(t, lambdaLogConsumerOptions, "arn"),
-// 		},
-// 		"environment": map[string]string{
-// 			"LOREM": "ipsum",
-// 		},
-// 		"region": "us-east-1",
-// 		"tags": map[string]string{
-// 			"Foo": lambdaLogGeneratorName,
-// 		},
-// 	}
-
-// 	lambdaLogGeneratorOptions := SetupTestCase(t, lambdaLogGeneratorVars)
-// 	t.Logf("Terraform module inputs: %+v", *lambdaLogGeneratorOptions)
-// 	TerraformApplyAndValidateOutputs(t, lambdaLogGeneratorOptions)
-// }
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+	ValidateSQSTriggerOutputs(t, terraformOptions, false)
+}
 
 func SetupExample(t *testing.T, functionName string, exampleDir string) *terraform.Options {
 
