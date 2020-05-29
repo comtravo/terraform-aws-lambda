@@ -75,6 +75,20 @@ variable "environment" {
 variable "trigger" {
   description = "Trigger configuration for this lambda function"
   type        = any
+
+  validation {
+    condition = contains([
+      "api-gateway",
+      "cloudwatch-logs",
+      "cognito-idp",
+      "cloudwatch-event-schedule",
+      "cloudwatch-event-trigger",
+      "sqs",
+      "step-function",
+    ], var.trigger.type)
+
+    error_message = "Unknown trigger type."
+  }
 }
 
 variable "cloudwatch_log_subscription" {
@@ -140,14 +154,14 @@ variable "tracing_config" {
   description = "https://www.terraform.io/docs/providers/aws/r/lambda_function.html"
 }
 
-# locals {
-#   allowed_triggers = [
-#     "api-gateway",
-#     "cloudwatch-logs",
-#     "cognito-idp",
-#     "cloudwatch-event-schedule",
-#     "cloudwatch-event-trigger",
-#     "sqs",
-#     "step-function",
-#   ]
-# }
+locals {
+  allowed_triggers = [
+    "api-gateway",
+    "cloudwatch-logs",
+    "cognito-idp",
+    "cloudwatch-event-schedule",
+    "cloudwatch-event-trigger",
+    "sqs",
+    "step-function",
+  ]
+}

@@ -233,30 +233,6 @@ func TestLambda_sqsFifoSnsTriggerExample(t *testing.T) {
 // 	TerraformApplyAndValidateOutputs(t, lambdaLogGeneratorOptions)
 // }
 
-func SetupTestCase(t *testing.T, terraformModuleVars map[string]interface{}) *terraform.Options {
-	testRunFolder, err := files.CopyTerraformFolderToTemp("../", t.Name())
-	require.NoError(t, err)
-	t.Logf("Copied files to test folder: %s", testRunFolder)
-
-	localstackConfigDestination := path.Join(testRunFolder, "localstack.tf")
-	files.CopyFile("fixtures/localstack.tf", localstackConfigDestination)
-	t.Logf("Copied localstack file to: %s", localstackConfigDestination)
-
-	lambdaConfigDestination := path.Join(testRunFolder, "lambda.tf")
-	files.CopyFile("fixtures/lambda.tf", lambdaConfigDestination)
-	t.Logf("Copied lambda file to: %s", lambdaConfigDestination)
-
-	lambdaFunctionDestination := path.Join(testRunFolder, "foo.zip")
-	files.CopyFile("fixtures/foo.zip", lambdaFunctionDestination)
-	t.Logf("Copied lambda file to: %s", lambdaFunctionDestination)
-
-	terraformOptions := &terraform.Options{
-		TerraformDir: testRunFolder,
-		Vars:         terraformModuleVars,
-	}
-	return terraformOptions
-}
-
 func SetupExample(t *testing.T, functionName string, exampleDir string) *terraform.Options {
 
 	localstackConfigDestination := path.Join(exampleDir, "localstack.tf")
