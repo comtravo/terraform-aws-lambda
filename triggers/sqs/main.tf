@@ -46,8 +46,9 @@ locals {
 }
 
 resource "aws_sqs_queue" "sqs-deadletter" {
-  count = local.enable_count
-  name  = local.sqs_dlq_name
+  count      = local.enable_count
+  name       = local.sqs_dlq_name
+  fifo_queue = var.sqs_config.fifo
 
   tags = var.tags
 }
@@ -56,6 +57,7 @@ resource "aws_sqs_queue" "sqs" {
   count                      = local.enable_count
   name                       = local.sqs_name
   visibility_timeout_seconds = var.sqs_config.visibility_timeout_seconds
+  fifo_queue                 = var.sqs_config.fifo
 
   redrive_policy = <<EOF
 {

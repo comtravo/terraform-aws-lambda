@@ -287,6 +287,38 @@ func TestLambda_sqsTrigger(t *testing.T) {
 	ValidateSQSTriggerOutputs(t, terraformOptions)
 }
 
+func TestLambda_sqsFifoTrigger(t *testing.T) {
+	t.Parallel()
+
+	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
+
+	terraformModuleVars := map[string]interface{}{
+		"file_name":     "foo.zip",
+		"function_name": function_name,
+		"handler":       "index.handler",
+		"role":          function_name,
+		"trigger": map[string]interface{}{
+			"type":       "sqs",
+			"batch_size": 10,
+			"fifo":       true,
+		},
+		"environment": map[string]string{
+			"LOREM": "ipsum",
+		},
+		"region": "us-east-1",
+		"tags": map[string]string{
+			"Foo": function_name,
+		},
+	}
+
+	terraformOptions := SetupTestCase(t, terraformModuleVars)
+	defer terraform.Destroy(t, terraformOptions)
+
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+	ValidateSQSTriggerOutputs(t, terraformOptions)
+}
+
 func TestLambda_cloudwatchLogsSubscription(t *testing.T) {
 	t.Skip()
 
