@@ -3,6 +3,8 @@
 ## Introduction  
 This module creates an AWS lambda and all the related resources. It is a complete re-write of our internal terraform lambda module.
 
+## Usage  
+Checkout [examples](./examples) on how to use this module for various trigger sources.
 ## Authors
 
 Module managed by [Comtravo](https://github.com/comtravo).
