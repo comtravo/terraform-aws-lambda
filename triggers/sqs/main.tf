@@ -22,7 +22,7 @@ variable "lambda_function_arn" {
 
 variable "sqs_config" {
   type = object({
-    sns_topics : string
+    sns_topics : list(string)
     fifo : bool
     sqs_name : string
     visibility_timeout_seconds : number
@@ -31,9 +31,9 @@ variable "sqs_config" {
   description = "SQS config"
 }
 
-locals {
-  sns_topics = "${compact(split(",", chomp(replace(lookup(var.sqs_config, "sns_topics", ""), "\n", ""))))}"
-}
+# locals {
+#   sns_topics = "${compact(split(",", chomp(replace(lookup(var.sqs_config, "sns_topics", ""), "\n", ""))))}"
+# }
 
 variable "tags" {
   type        = map(string)
@@ -70,8 +70,8 @@ EOF
 }
 
 locals {
-  setup_sns_subscription_iam_policy = var.enable && length(local.sns_topics) != 0 ? 1 : 0
-  sns_topic_subscriptions_count     = local.enable_count * length(local.sns_topics)
+  setup_sns_subscription_iam_policy = var.enable && length(var.sqs_config.sns_topics) != 0 ? 1 : 0
+  sns_topic_subscriptions_count     = local.enable_count * length(var.sqs_config.sns_topics)
 }
 
 data "aws_iam_policy_document" "SendMessage" {
@@ -92,7 +92,7 @@ data "aws_iam_policy_document" "SendMessage" {
     condition {
       test     = "ForAnyValue:ArnLike"
       variable = "aws:SourceArn"
-      values   = local.sns_topics
+      values   = var.sqs_config.sns_topics
     }
   }
 }
@@ -107,7 +107,7 @@ resource "aws_sqs_queue_policy" "SendMessage" {
 resource "aws_sns_topic_subscription" "to-sqs" {
   count     = local.sns_topic_subscriptions_count
   protocol  = "sqs"
-  topic_arn = trimspace(element(local.sns_topics, count.index))
+  topic_arn = trimspace(element(var.sqs_config.sns_topics, count.index))
   endpoint  = element(aws_sqs_queue.sqs.*.arn, 0)
 }
 

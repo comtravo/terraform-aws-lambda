@@ -74,7 +74,7 @@ variable "environment" {
 
 variable "trigger" {
   description = "Trigger configuration for this lambda function"
-  type        = map(string)
+  type        = any
 }
 
 variable "cloudwatch_log_subscription" {

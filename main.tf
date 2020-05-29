@@ -51,7 +51,7 @@ resource "aws_cloudwatch_log_group" "lambda" {
 }
 
 module "triggered-by-cloudwatch-event-schedule" {
-  enable = var.trigger["type"] == "cloudwatch-event-schedule"
+  enable = var.trigger.type == "cloudwatch-event-schedule"
 
   source = "./triggers/cloudwatch_event_schedule/"
 
@@ -65,7 +65,7 @@ module "triggered-by-cloudwatch-event-schedule" {
 }
 
 module "triggered-by-cloudwatch-event-trigger" {
-  enable = var.trigger["type"] == "cloudwatch-event-trigger"
+  enable = var.trigger.type == "cloudwatch-event-trigger"
 
   source = "./triggers/cloudwatch_event_trigger/"
 
@@ -79,7 +79,7 @@ module "triggered-by-cloudwatch-event-trigger" {
 }
 
 module "triggered-by-step-function" {
-  enable = var.trigger["type"] == "step-function"
+  enable = var.trigger.type == "step-function"
 
   source = "./triggers/step_function/"
 
@@ -88,7 +88,7 @@ module "triggered-by-step-function" {
 }
 
 module "triggered-by-api-gateway" {
-  enable = var.trigger["type"] == "api-gateway"
+  enable = var.trigger.type == "api-gateway"
 
   source = "./triggers/api_gateway/"
 
@@ -96,7 +96,7 @@ module "triggered-by-api-gateway" {
 }
 
 module "triggered-by-cognito-idp" {
-  enable = var.trigger["type"] == "cognito-idp"
+  enable = var.trigger.type == "cognito-idp"
 
   source = "./triggers/cognito_idp/"
 
@@ -104,7 +104,7 @@ module "triggered-by-cognito-idp" {
 }
 
 module "triggered-by-cloudwatch-logs" {
-  enable = var.trigger["type"] == "cloudwatch-logs"
+  enable = var.trigger.type == "cloudwatch-logs"
 
   source = "./triggers/cloudwatch_logs/"
 
@@ -113,18 +113,18 @@ module "triggered-by-cloudwatch-logs" {
 }
 
 module "triggered-by-sqs" {
-  enable = var.trigger["type"] == "sqs"
+  enable = var.trigger.type == "sqs"
 
   source = "./triggers/sqs/"
 
   lambda_function_arn = aws_lambda_function.lambda.arn
 
   sqs_config = {
-    sns_topics                 = lookup(var.trigger, "sns_topics", "")
+    sns_topics                 = try(var.trigger.sns_topics, [])
     sqs_name                   = var.function_name
     visibility_timeout_seconds = var.timeout + 5
-    batch_size                 = tonumber(lookup(var.trigger, "batch_size", "1"))
-    fifo                       = tobool(lookup(var.trigger, "fifo", "false"))
+    batch_size                 = tonumber(try(var.trigger.batch_size, "1"))
+    fifo                       = tobool(try(var.trigger.fifo, false))
   }
 
   tags = local.tags

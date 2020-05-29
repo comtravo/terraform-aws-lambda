@@ -137,6 +137,20 @@ func TestLambda_sqsTriggerExample(t *testing.T) {
 	ValidateSQSTriggerOutputs(t, terraformOptions, false)
 }
 
+func TestLambda_sqsSnsTriggerExample(t *testing.T) {
+	t.Parallel()
+
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/sqs_sns_trigger/"
+
+	terraformOptions := SetupExample(t, functionName, exampleDir)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
+
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+	ValidateSQSTriggerOutputs(t, terraformOptions, false)
+}
+
 func TestLambda_sqsFifoTriggerExample(t *testing.T) {
 	t.Parallel()
 
@@ -149,6 +163,20 @@ func TestLambda_sqsFifoTriggerExample(t *testing.T) {
 
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
 	ValidateSQSTriggerOutputs(t, terraformOptions, true)
+}
+
+func TestLambda_sqsFifoSnsTriggerExample(t *testing.T) {
+	t.Parallel()
+
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/sqs_fifo_sns_trigger/"
+
+	terraformOptions := SetupExample(t, functionName, exampleDir)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
+
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+	ValidateSQSTriggerOutputs(t, terraformOptions, false)
 }
 
 // func TestLambda_cloudwatchLogsSubscription(t *testing.T) {
