@@ -1,67 +1,36 @@
+# Trigger plugin for the AWS Lambda module
 
+## Introduction  
+Allow this lambda to be triggered by SQS and optionally subscribe to SNS topics
 
-## Generic example:
-```hcl
-module "lambda-offer-email" {
- source = "github.com/comtravo/terraform-aws-lambda?ref=2.4.0"
+## Requirements
 
- ################################################
- #        LAMBDA FUNCTION CONFIGURATION         #
- file_name = "${path.root}/../artifacts/offer-email.zip"
+| Name | Version |
+|------|---------|
+| terraform | >= 0.12 |
+| aws | ~> 2.0 |
 
- function_name = "lambda-offer-email-${terraform.workspace}"
- handler       = "index.offerEmails"
- memory_size   = 1024
+## Providers
 
- trigger {
-   type          = "sqs"
-   sns_topic_arn = "arn:aws:sns:${var.region}:${var.ct_account_id}:lambda-offer-${terraform.workspace}"
- }
-
- environment = "${merge(
-   local.ct_lambda_commons,
-   map(
-     "FOO", "baz",
-     "LOREM", "ipsum",
-   )
- )}"
-
- enable_cloudwatch_log_subscription = true
-
- cloudwatch_log_subscription {
-   destination_arn = "${module.lambda-elk-logging.lambda_arn}"
-   filter_pattern  = "[timestamp=*Z, request_id=\"*-*\", logLevel=*, event]"
- }
-
- tracing_config = "${var.lambda_xray_config}"
-
- #                                              #
- ################################################
-
- region = "${var.region}"
- role   = "${aws_iam_role.lambda.arn}"
- vpc_config {
-   subnet_ids         = ["${module.main_vpc.private_subnets}"]
-   security_group_ids = ["${module.main_vpc.vpc_default_sg}"]
- }
-}
-```
+| Name | Version |
+|------|---------|
+| aws | ~> 2.0 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| lambda\_function\_arn | Lambda arn | string | n/a | yes |
-| sqs\_config | SQS queue configuration | map | n/a | yes |
-| tags | Tags | map | n/a | yes |
-| enable | 0 to disable and 1 to enable this module | string | `"0"` | no |
+|------|-------------|------|---------|:--------:|
+| lambda_function_arn | Lambda function arn | `string` | n/a | yes |
+| sqs_config | SQS config | <pre>object({<br>    sns_topics : list(string)<br>    fifo : bool<br>    sqs_name : string<br>    visibility_timeout_seconds : number<br>    batch_size : number<br>  })</pre> | n/a | yes |
+| tags | Tags | `map(string)` | n/a | yes |
+| enable | Enable module | `bool` | `false` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| dlq\_arn | DLQ ARN |
-| dlq\_id | DLQ ID |
-| queue\_arn | SQS ARN |
-| queue\_id | SQS endpoint |
+| dlq | Dead letter queue details |
+| queue | SQS queue details |
+| queue_arn | SQS ARN |
+| queue_id | SQS endpoint |
 

@@ -1,112 +1,152 @@
 variable "file_name" {
-  description = "lambda function filename name"
+  description = "Lambda function filename name"
+  type        = string
 }
 
 variable "layers" {
   description = "List of layers for this lambda function"
-  type        = "list"
+  type        = list(string)
   default     = []
 }
 
 variable "function_name" {
-  description = "lambda function name"
+  description = "Lambda function name"
+  type        = string
 }
 
 variable "handler" {
-  description = "lambda function handler"
+  description = "Lambda function handler"
+  type        = string
 }
 
 variable "role" {
-  description = "lambda function role"
+  description = "Lambda function role"
+  type        = string
 }
 
 variable "description" {
-  description = "lambda function description"
+  description = "Lambda function description"
   default     = "Managed by Terraform"
+  type        = string
 }
 
 variable "memory_size" {
-  description = "lambda function memory size"
+  description = "Lambda function memory size"
   default     = 128
+  type        = number
 }
 
 variable "runtime" {
-  description = "lambda function runtime"
+  description = "Lambda function runtime"
   default     = "nodejs12.x"
+  type        = string
 }
 
 variable "timeout" {
-  description = "lambda function runtime"
+  description = "Lambda function runtime"
   default     = 300
+  type        = number
 }
 
 variable "publish" {
   description = "Publish lambda function"
   default     = false
-  description = "Publish lambda"
+  type        = bool
 }
 
 variable "vpc_config" {
-  type        = "map"
-  description = "VPC configuration for lambda"
+  description = "Lambda VPC configuration"
+  type = object({
+    subnet_ids : list(string)
+    security_group_ids : list(string)
+  })
+  default = {
+    subnet_ids : []
+    security_group_ids : []
+  }
 }
 
 variable "environment" {
-  description = "lambda environment variables"
-  type        = "map"
+  description = "Lambda environment variables"
+  type        = map(string)
   default     = {}
 }
 
 variable "trigger" {
-  description = "trigger configuration for this lambda function"
-  type        = "map"
+  description = "Trigger configuration for this lambda function"
+  type        = any
+
+  validation {
+    condition = contains([
+      "api-gateway",
+      "cloudwatch-logs",
+      "cognito-idp",
+      "cloudwatch-event-schedule",
+      "cloudwatch-event-trigger",
+      "sqs",
+      "step-function",
+    ], var.trigger.type)
+
+    error_message = "Unknown trigger type."
+  }
 }
 
 variable "cloudwatch_log_subscription" {
-  description = "cloudwatch log stream configuration"
-  type        = "map"
-  default     = {}
+  description = "Cloudwatch log stream configuration"
+  type = object({
+    enable : bool
+    filter_pattern : string
+    destination_arn : string
+  })
+  default = {
+    enable : false
+    filter_pattern : ""
+    destination_arn : ""
+  }
 }
 
 variable "tags" {
   description = "Tags for this lambda function"
   default     = {}
+  type        = map(string)
 }
 
 variable "reserved_concurrent_executions" {
   description = "Reserved concurrent executions  for this lambda function"
   default     = -1
+  type        = number
 }
 
 variable "region" {
   description = "AWS region"
+  type        = string
 }
 
-variable "enable_cloudwatch_log_subscription" {
-  default     = false
-  description = "Enable cloudwatch log subscription"
-}
 
 variable "cloudwatch_log_retention" {
+  description = "Enable Cloudwatch logs retention"
   default     = 90
-  description = "Cloudwatch log retention"
+  type        = number
 }
 
 locals {
   _tags = {
-    Name        = "${var.function_name}"
-    environment = "${terraform.workspace}"
+    Name        = var.function_name
+    environment = terraform.workspace
   }
 }
 
 locals {
-  source_code_hash = "${base64sha256(file(var.file_name))}"
+  source_code_hash = filebase64sha256(var.file_name)
 
-  tags                 = "${merge(var.tags, local._tags)}"
-  cloudwatch_log_group = "/aws/lambda/${var.function_name}"
+  tags                      = merge(var.tags, local._tags)
+  cloudwatch_log_group_name = "/aws/lambda/${var.function_name}"
 }
 
 variable "tracing_config" {
+  type = object({
+    mode : string
+  })
   default = {
     mode = "PassThrough"
   }

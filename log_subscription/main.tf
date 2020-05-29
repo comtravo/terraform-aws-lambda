@@ -1,25 +1,32 @@
 variable "enable" {
-  default     = 0
-  description = "0 to disable and 1 to enable this module"
+  default     = false
+  type        = bool
+  description = "Enable this module"
 }
 
 variable "lambda_name" {
-  description = "Lambda arn"
+  type        = string
+  description = "Lambda name"
 }
 
 variable "log_group_name" {
-  description = "Lambda cloud watch logs stream name"
+  type        = string
+  description = "Lambda log group name"
 }
 
 variable "cloudwatch_log_subscription" {
-  type        = "map"
-  description = "Cloudwatch log subscription configuration"
+  type = object({
+    filter_pattern : string
+    destination_arn : string
+  })
+  description = "Lambda CloudWatch log subscription"
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "lambda_cloudwatch_subscription" {
-  count           = "${var.enable}"
-  name            = "${var.lambda_name}"
-  log_group_name  = "${var.log_group_name}"
-  filter_pattern  = "${lookup(var.cloudwatch_log_subscription, "filter_pattern", "")}"
-  destination_arn = "${lookup(var.cloudwatch_log_subscription, "destination_arn", "")}"
+  count           = var.enable ? 1 : 0
+  name            = var.lambda_name
+  log_group_name  = var.log_group_name
+  filter_pattern  = var.cloudwatch_log_subscription.filter_pattern
+  destination_arn = var.cloudwatch_log_subscription.destination_arn
 }
+

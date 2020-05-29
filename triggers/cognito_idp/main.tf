@@ -1,67 +1,26 @@
 /**
- *
- *
- * ## Generic example:
- *```hcl
- *module "lambda-offer-email" {
- *  source = "github.com/comtravo/terraform-aws-lambda?ref=2.4.0"
- *
- *  ################################################
- *  #        LAMBDA FUNCTION CONFIGURATION         #
- *  file_name = "${path.root}/../artifacts/offer-email.zip"
- *
- *  function_name = "lambda-offer-email-${terraform.workspace}"
- *  handler       = "index.offerEmails"
- *  memory_size   = 1024
- *
- * trigger {
- *   type                = "cognito-idp"
- * }
- *
- *  environment = "${merge(
- *    local.ct_lambda_commons,
- *    map(
- *      "FOO", "baz",
- *      "LOREM", "ipsum",
- *    )
- *  )}"
- *
- *  enable_cloudwatch_log_subscription = true
- *
- *  cloudwatch_log_subscription {
- *    destination_arn = "${module.lambda-elk-logging.lambda_arn}"
- *    filter_pattern  = "[timestamp=*Z, request_id=\"*-*\", logLevel=*, event]"
- *  }
- *
- *  tracing_config = "${var.lambda_xray_config}"
- *
- *  #                                              #
- *  ################################################
- *
- *  region = "${var.region}"
- *  role   = "${aws_iam_role.lambda.arn}"
- *  vpc_config {
- *    subnet_ids         = ["${module.main_vpc.private_subnets}"]
- *    security_group_ids = ["${module.main_vpc.vpc_default_sg}"]
- *  }
- *}
- *```
- *
- */
+* # Trigger plugin for the AWS Lambda module
+*
+* ## Introduction
+* Allow this lambda to be triggered by Cognito IDP
+*/
 
 variable "enable" {
-  default     = 0
-  description = "0 to disable and 1 to enable this module"
+  default     = false
+  type        = bool
+  description = "Enable module"
 }
 
 variable "lambda_function_arn" {
-  description = "Lambda arn"
+  type        = string
+  description = "Lambda function arn"
 }
 
 resource "aws_lambda_permission" "allow_invocation_from_cognito_idp" {
-  count         = "${var.enable}"
+  count         = var.enable ? 1 : 0
   statement_id  = "AllowExecutionFromCognito"
   action        = "lambda:InvokeFunction"
-  function_name = "${var.lambda_function_arn}"
+  function_name = var.lambda_function_arn
   principal     = "cognito-idp.amazonaws.com"
 }
+
