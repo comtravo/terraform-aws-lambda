@@ -136,3 +136,13 @@ output "queue" {
     arn = var.enable ? aws_sqs_queue.sqs[0].arn : ""
   }
 }
+
+output "queue_id" {
+  description = "SQS endpoint"
+  value       = "${element(concat(aws_sqs_queue.sqs.*.id, list("")), 0)}"
+}
+
+output "queue_arn" {
+  description = "SQS ARN"
+  value       = "${element(concat(aws_sqs_queue.sqs.*.arn, list("")), 0)}"
+}
