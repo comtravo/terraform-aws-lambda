@@ -433,5 +433,6 @@ func ValidateSQSTriggerOutputs(t *testing.T, terraformOptions *terraform.Options
 	require.Equal(t, queue["id"], queue["url"])
 
 	require.NotEqual(t, queue["id"], dlq["id"])
+	require.NotEqual(t, queue["arn"], dlq["arn"])
 
 }
