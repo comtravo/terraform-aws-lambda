@@ -123,96 +123,33 @@ func TestLambda_cloudwatchLogsTriggerExample(t *testing.T) {
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
 }
 
-// func TestLambda_cloudwatchLogsTrigger(t *testing.T) {
-// 	t.Parallel()
+func TestLambda_sqsTriggerExample(t *testing.T) {
+	t.Parallel()
 
-// 	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/sqs_trigger/"
 
-// 	terraformModuleVars := map[string]interface{}{
-// 		"file_name":     "foo.zip",
-// 		"function_name": function_name,
-// 		"handler":       "index.handler",
-// 		"role":          function_name,
-// 		"trigger": map[string]string{
-// 			"type": "cloudwatch-logs",
-// 		},
-// 		"environment": map[string]string{
-// 			"LOREM": "ipsum",
-// 		},
-// 		"region": "us-east-1",
-// 		"tags": map[string]string{
-// 			"Foo": function_name,
-// 		},
-// 	}
+	terraformOptions := SetupExample(t, functionName, exampleDir)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
 
-// 	terraformOptions := SetupTestCase(t, terraformModuleVars)
-// 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
-// 	TerraformApplyAndValidateOutputs(t, terraformOptions)
-// }
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+	ValidateSQSTriggerOutputs(t, terraformOptions, false)
+}
 
-// func TestLambda_sqsTrigger(t *testing.T) {
-// 	t.Parallel()
+func TestLambda_sqsFifoTriggerExample(t *testing.T) {
+	t.Parallel()
 
-// 	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/sqs_fifo_trigger/"
 
-// 	terraformModuleVars := map[string]interface{}{
-// 		"file_name":     "foo.zip",
-// 		"function_name": function_name,
-// 		"handler":       "index.handler",
-// 		"role":          function_name,
-// 		"trigger": map[string]interface{}{
-// 			"type":       "sqs",
-// 			"batch_size": 10,
-// 			"fifo":       false,
-// 		},
-// 		"environment": map[string]string{
-// 			"LOREM": "ipsum",
-// 		},
-// 		"region": "us-east-1",
-// 		"tags": map[string]string{
-// 			"Foo": function_name,
-// 		},
-// 	}
+	terraformOptions := SetupExample(t, functionName, exampleDir)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
 
-// 	terraformOptions := SetupTestCase(t, terraformModuleVars)
-// 	defer terraform.Destroy(t, terraformOptions)
-
-// 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
-// 	TerraformApplyAndValidateOutputs(t, terraformOptions)
-// 	ValidateSQSTriggerOutputs(t, terraformOptions)
-// }
-
-// func TestLambda_sqsFifoTrigger(t *testing.T) {
-// 	t.Parallel()
-
-// 	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
-
-// 	terraformModuleVars := map[string]interface{}{
-// 		"file_name":     "foo.zip",
-// 		"function_name": function_name,
-// 		"handler":       "index.handler",
-// 		"role":          function_name,
-// 		"trigger": map[string]interface{}{
-// 			"type":       "sqs",
-// 			"batch_size": 10,
-// 			"fifo":       true,
-// 		},
-// 		"environment": map[string]string{
-// 			"LOREM": "ipsum",
-// 		},
-// 		"region": "us-east-1",
-// 		"tags": map[string]string{
-// 			"Foo": function_name,
-// 		},
-// 	}
-
-// 	terraformOptions := SetupTestCase(t, terraformModuleVars)
-// 	defer terraform.Destroy(t, terraformOptions)
-
-// 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
-// 	TerraformApplyAndValidateOutputs(t, terraformOptions)
-// 	ValidateSQSTriggerOutputs(t, terraformOptions)
-// }
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+	ValidateSQSTriggerOutputs(t, terraformOptions, true)
+}
 
 // func TestLambda_cloudwatchLogsSubscription(t *testing.T) {
 // 	t.Skip()
@@ -322,14 +259,12 @@ func TerraformApplyAndValidateOutputs(t *testing.T, terraformOptions *terraform.
 	require.Regexp(t, terraform.Output(t, terraformOptions, "arn"), fmt.Sprintf("arn:aws:lambda:us-east-1:000000000000:function:%s", terraformOptions.Vars["function_name"]))
 }
 
-func ValidateSQSTriggerOutputs(t *testing.T, terraformOptions *terraform.Options) {
+func ValidateSQSTriggerOutputs(t *testing.T, terraformOptions *terraform.Options, isFifo bool) {
 	dlq := terraform.OutputMap(t, terraformOptions, "dlq")
 	queue := terraform.OutputMap(t, terraformOptions, "queue")
 
 	expectedDlqName := fmt.Sprintf("%s-dlq", terraformOptions.Vars["function_name"])
 	expectedQueueName := fmt.Sprintf("%s", terraformOptions.Vars["function_name"])
-
-	isFifo := terraformOptions.Vars["trigger"].(map[string]interface{})["fifo"]
 
 	if isFifo == true {
 		expectedDlqName = fmt.Sprintf("%s.fifo", expectedDlqName)
