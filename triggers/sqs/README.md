@@ -31,4 +31,6 @@ Allow this lambda to be triggered by SQS and optionally subscribe to SNS topics
 |------|-------------|
 | dlq | Dead letter queue details |
 | queue | SQS queue details |
+| queue_arn | SQS ARN |
+| queue_id | SQS endpoint |
 
