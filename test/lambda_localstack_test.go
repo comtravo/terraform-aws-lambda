@@ -58,37 +58,17 @@ func TestLambda_publishExample(t *testing.T) {
 	require.Regexp(t, terraform.Output(t, terraformOptions, "qualified_arn"), fmt.Sprintf("arn:aws:lambda:us-east-1:000000000000:function:%s:1", terraformOptions.Vars["function_name"]))
 }
 
-func TestLambda_publish(t *testing.T) {
+func TestLambda_cloudwatchEventScheduleTriggerExample(t *testing.T) {
 	t.Parallel()
 
-	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/cloudwatch_event_schedule_trigger/"
 
-	terraformModuleVars := map[string]interface{}{
-		"file_name":     "foo.zip",
-		"function_name": function_name,
-		"handler":       "index.handler",
-		"role":          function_name,
-		"publish":       true,
-		"layers":        []string{"arn:aws:lambda:us-east-1:284387765956:layer:BetterSqlite3:8"},
-		"trigger": map[string]string{
-			"type": "api-gateway",
-		},
-		"environment": map[string]string{
-			"LOREM": "ipsum",
-		},
-		"region": "us-east-1",
-		"tags": map[string]string{
-			"Foo": function_name,
-		},
-	}
-
-	terraformOptions := SetupTestCase(t, terraformModuleVars)
+	terraformOptions := SetupExample(t, functionName, exampleDir)
 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
 	defer terraform.Destroy(t, terraformOptions)
 
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
-	require.Equal(t, "1", terraform.Output(t, terraformOptions, "version"))
-	require.Regexp(t, terraform.Output(t, terraformOptions, "qualified_arn"), fmt.Sprintf("arn:aws:lambda:us-east-1:000000000000:function:%s:1", terraformOptions.Vars["function_name"]))
 }
 
 func TestLambda_cloudwatchEventScheduleTrigger(t *testing.T) {
