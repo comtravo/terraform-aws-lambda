@@ -15,29 +15,13 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestLambda_apiGatewayTrigger(t *testing.T) {
+func TestLambda_apiGatewayTriggerExample(t *testing.T) {
 	t.Parallel()
 
-	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/api_gateway_trigger/"
 
-	terraformModuleVars := map[string]interface{}{
-		"file_name":     "foo.zip",
-		"function_name": function_name,
-		"handler":       "index.handler",
-		"role":          function_name,
-		"trigger": map[string]string{
-			"type": "api-gateway",
-		},
-		"environment": map[string]string{
-			"LOREM": "ipsum",
-		},
-		"region": "us-east-1",
-		"tags": map[string]string{
-			"Foo": function_name,
-		},
-	}
-
-	terraformOptions := SetupTestCase(t, terraformModuleVars)
+	terraformOptions := SetupExample(t, functionName, exampleDir)
 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
 	defer terraform.Destroy(t, terraformOptions)
 
@@ -45,35 +29,17 @@ func TestLambda_apiGatewayTrigger(t *testing.T) {
 	require.Regexp(t, regexp.MustCompile("arn:aws:apigateway:us-east-1:lambda:path/*"), terraform.Output(t, terraformOptions, "invoke_arn"))
 }
 
-func TestLambda_layers(t *testing.T) {
+func TestLambda_layersExample(t *testing.T) {
 	t.Parallel()
 
-	function_name := fmt.Sprintf("lambda-%s", random.UniqueId())
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/layers/"
 
-	terraformModuleVars := map[string]interface{}{
-		"file_name":     "foo.zip",
-		"function_name": function_name,
-		"handler":       "index.handler",
-		"role":          function_name,
-		"layers":        []string{"arn:aws:lambda:us-east-1:284387765956:layer:BetterSqlite3:8"},
-		"trigger": map[string]string{
-			"type": "api-gateway",
-		},
-		"environment": map[string]string{
-			"LOREM": "ipsum",
-		},
-		"region": "us-east-1",
-		"tags": map[string]string{
-			"Foo": function_name,
-		},
-	}
-
-	terraformOptions := SetupTestCase(t, terraformModuleVars)
+	terraformOptions := SetupExample(t, functionName, exampleDir)
 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
 	defer terraform.Destroy(t, terraformOptions)
 
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
-
 	require.Regexp(t, regexp.MustCompile("arn:aws:apigateway:us-east-1:lambda:path/*"), terraform.Output(t, terraformOptions, "invoke_arn"))
 }
 
@@ -393,6 +359,25 @@ func SetupTestCase(t *testing.T, terraformModuleVars map[string]interface{}) *te
 	terraformOptions := &terraform.Options{
 		TerraformDir: testRunFolder,
 		Vars:         terraformModuleVars,
+	}
+	return terraformOptions
+}
+
+func SetupExample(t *testing.T, functionName string, exampleDir string) *terraform.Options {
+
+	localstackConfigDestination := path.Join(exampleDir, "localstack.tf")
+	files.CopyFile("fixtures/localstack.tf", localstackConfigDestination)
+	t.Logf("Copied localstack file to: %s", localstackConfigDestination)
+
+	lambdaFunctionDestination := path.Join(exampleDir, "foo.zip")
+	files.CopyFile("fixtures/foo.zip", lambdaFunctionDestination)
+	t.Logf("Copied lambda file to: %s", lambdaFunctionDestination)
+
+	terraformOptions := &terraform.Options{
+		TerraformDir: exampleDir,
+		Vars:         map[string]interface{}{
+			"function_name": functionName,
+		},
 	}
 	return terraformOptions
 }
