@@ -59,9 +59,9 @@ module "sqs" {
   layers        = ["arn:aws:lambda:us-east-1:284387765956:layer:BetterSqlite3:8"]
   trigger = {
     sns_topics = [
-      "arn:aws:sns:us-east-1:000000000000:${var.function_name}-foo",
-      "arn:aws:sns:us-east-1:000000000000:${var.function_name}-bar",
-      "arn:aws:sns:us-east-1:000000000000:${var.function_name}-baz",
+      "arn:aws:sns:us-east-1:000000000000:${aws_sns_topic.foo.name}",
+      "arn:aws:sns:us-east-1:000000000000:${aws_sns_topic.bar.name}",
+      "arn:aws:sns:us-east-1:000000000000:${aws_sns_topic.baz.name}",
     ]
     type       = "sqs"
     batch_size = 10
