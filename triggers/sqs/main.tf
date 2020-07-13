@@ -31,10 +31,6 @@ variable "sqs_config" {
   description = "SQS config"
 }
 
-# locals {
-#   sns_topics = "${compact(split(",", chomp(replace(lookup(var.sqs_config, "sns_topics", ""), "\n", ""))))}"
-# }
-
 variable "tags" {
   type        = map(string)
   description = "Tags"
@@ -122,27 +118,27 @@ resource "aws_lambda_event_source_mapping" "event_source_mapping" {
 output "dlq" {
   description = "Dead letter queue details"
   value = {
-    id  = var.enable ? aws_sqs_queue.sqs-deadletter[0].id : ""
-    url = var.enable ? aws_sqs_queue.sqs-deadletter[0].id : ""
-    arn = var.enable ? aws_sqs_queue.sqs-deadletter[0].arn : ""
+    id  = element(concat(aws_sqs_queue.sqs-deadletter.*.id, [""]), 0)
+    url = element(concat(aws_sqs_queue.sqs-deadletter.*.id, [""]), 0)
+    arn = element(concat(aws_sqs_queue.sqs-deadletter.*.arn, [""]), 0)
   }
 }
 
 output "queue" {
   description = "SQS queue details"
   value = {
-    id  = var.enable ? aws_sqs_queue.sqs[0].id : ""
-    url = var.enable ? aws_sqs_queue.sqs[0].id : ""
-    arn = var.enable ? aws_sqs_queue.sqs[0].arn : ""
+    id  = element(concat(aws_sqs_queue.sqs.*.id, [""]), 0)
+    url = element(concat(aws_sqs_queue.sqs.*.id, [""]), 0)
+    arn = element(concat(aws_sqs_queue.sqs.*.arn, [""]), 0)
   }
 }
 
 output "queue_id" {
   description = "SQS endpoint"
-  value       = "${element(concat(aws_sqs_queue.sqs.*.id, list("")), 0)}"
+  value       = element(concat(aws_sqs_queue.sqs.*.id, [""]), 0)
 }
 
 output "queue_arn" {
   description = "SQS ARN"
-  value       = "${element(concat(aws_sqs_queue.sqs.*.arn, list("")), 0)}"
+  value       = element(concat(aws_sqs_queue.sqs.*.arn, [""]), 0)
 }
