@@ -8,12 +8,12 @@ provider "aws" {
   secret_key                  = "This is not an actual secret key."
 
   endpoints {
-    cloudwatchevents = "http://localstack:4587"
-    cloudwatchlogs   = "http://localstack:4586"
-    iam              = "http://localstack:4593"
-    lambda           = "http://localstack:4574"
-    sns              = "http://localstack:4575"
-    sqs              = "http://localstack:4576"
-    sts              = "http://localstack:4592"
+    cloudwatchevents = "http://localstack:4566"
+    cloudwatchlogs   = "http://localstack:4566"
+    iam              = "http://localstack:4566"
+    lambda           = "http://localstack:4566"
+    sns              = "http://localstack:4566"
+    sqs              = "http://localstack:4566"
+    sts              = "http://localstack:4566"
   }
 }
