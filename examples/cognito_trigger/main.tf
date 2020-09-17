@@ -47,6 +47,9 @@ module "cognito" {
   trigger = {
     type = "cognito-idp"
   }
+  environment = {
+    "LOREM" = "IPSUM"
+  }
   region = "us-east-1"
   tags = {
     "Foo" : var.function_name
