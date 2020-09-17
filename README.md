@@ -17,7 +17,7 @@ MIT Licensed. See LICENSE for full details.
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12 |
+| terraform | >= 0.12.29 |
 | aws | ~> 2.0 |
 
 ## Providers
