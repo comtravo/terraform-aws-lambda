@@ -69,7 +69,7 @@ variable "vpc_config" {
 variable "environment" {
   description = "Lambda environment variables"
   type        = map(string)
-  default     = {}
+  default     = null
 }
 
 variable "trigger" {

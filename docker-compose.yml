@@ -16,7 +16,7 @@ services:
       - localstack
 
   localstack:
-    image: localstack/localstack
+    image: localstack/localstack:0.11.4
     environment:
       - SERVICES=events,iam,logs,lambda,sns,sqs,sts
       - AWS_REGION=us-east-1

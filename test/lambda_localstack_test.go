@@ -30,6 +30,20 @@ func TestLambda_apiGatewayTriggerExample(t *testing.T) {
 	require.Regexp(t, regexp.MustCompile("arn:aws:apigateway:us-east-1:lambda:path/*"), terraform.Output(t, terraformOptions, "invoke_arn"))
 }
 
+func TestLambda_noEnvironmentVariables(t *testing.T) {
+	t.Parallel()
+
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/no_environment_variables/"
+
+	terraformOptions := SetupExample(t, functionName, exampleDir)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
+
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+	require.Regexp(t, regexp.MustCompile("arn:aws:apigateway:us-east-1:lambda:path/*"), terraform.Output(t, terraformOptions, "invoke_arn"))
+}
+
 func TestLambda_layersExample(t *testing.T) {
 	t.Parallel()
 
