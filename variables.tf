@@ -85,6 +85,7 @@ variable "trigger" {
       "cloudwatch-event-trigger",
       "sqs",
       "step-function",
+      null
     ], var.trigger.type)
 
     error_message = "Unknown trigger type."

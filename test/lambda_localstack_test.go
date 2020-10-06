@@ -86,6 +86,19 @@ func TestLambda_cloudwatchEventScheduleTriggerExample(t *testing.T) {
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
 }
 
+func TestLambda_nullTriggerExample(t *testing.T) {
+	t.Parallel()
+
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/null_trigger/"
+
+	terraformOptions := SetupExample(t, functionName, exampleDir)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
+
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+}
+
 func TestLambda_cloudwatchEventPatternTriggerExample(t *testing.T) {
 	t.Parallel()
 
