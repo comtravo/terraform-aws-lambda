@@ -44,7 +44,7 @@ module "null_trigger" {
   handler       = "index.handler"
   role          = aws_iam_role.lambda.name
   trigger = {
-    type = null
+    type = "null"
   }
   region = "us-east-1"
   tags = {
