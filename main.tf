@@ -151,7 +151,7 @@ module "dashboard_basic" {
 
   source = "github.com/comtravo/grafana-dashboards//terraform_modules/lambda?ref=1.0.0"
 
-  enable = var.enable && var.grafana_configuration.enable && contains([
+  enable = var.grafana_configuration.enable && contains([
     "cloudwatch-logs",
     "cognito-idp",
     "cloudwatch-event-schedule",
