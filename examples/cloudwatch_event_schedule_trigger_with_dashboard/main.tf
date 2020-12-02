@@ -1,3 +1,8 @@
+provider "grafana" {
+  url  = "http://grafana:3000"
+  auth = "admin:admin"
+}
+
 variable "function_name" {
   type = string
 }
