@@ -154,3 +154,23 @@ variable "tracing_config" {
 
   description = "https://www.terraform.io/docs/providers/aws/r/lambda_function.html"
 }
+
+variable "grafana_configuration" {
+  description = "Configuration to create dashboards and alerts"
+
+  type = object({
+    enable        = bool
+    environment   = string
+    data_source   = string
+    notifications = list(string)
+    folder        = string
+  })
+
+  default = {
+    enable        = false
+    environment   = ""
+    data_source   = ""
+    notifications = [""]
+    folder        = ""
+  }
+}

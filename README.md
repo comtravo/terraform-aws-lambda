@@ -40,6 +40,7 @@ MIT Licensed. See LICENSE for full details.
 | cloudwatch_log_subscription | Cloudwatch log stream configuration | <pre>object({<br>    enable : bool<br>    filter_pattern : string<br>    destination_arn : string<br>  })</pre> | <pre>{<br>  "destination_arn": "",<br>  "enable": false,<br>  "filter_pattern": ""<br>}</pre> | no |
 | description | Lambda function description | `string` | `"Managed by Terraform"` | no |
 | environment | Lambda environment variables | `map(string)` | `null` | no |
+| grafana_configuration | Configuration to create dashboards and alerts | <pre>object({<br>    enable        = bool<br>    environment   = string<br>    data_source   = string<br>    notifications = list(string)<br>    folder        = string<br>  })</pre> | <pre>{<br>  "data_source": "",<br>  "enable": false,<br>  "environment": "",<br>  "folder": "",<br>  "notifications": [<br>    ""<br>  ]<br>}</pre> | no |
 | layers | List of layers for this lambda function | `list(string)` | `[]` | no |
 | memory_size | Lambda function memory size | `number` | `128` | no |
 | publish | Publish lambda function | `bool` | `false` | no |

@@ -146,3 +146,27 @@ module "cloudwatch-log-subscription" {
   cloudwatch_log_subscription = var.cloudwatch_log_subscription
 }
 
+
+module "dashboard_basic" {
+
+  source = "github.com/comtravo/grafana-dashboards//terraform_modules/lambda?ref=1.0.0"
+
+  enable = var.enable && var.grafana_configuration.enable && contains([
+    "cloudwatch-logs",
+    "cognito-idp",
+    "cloudwatch-event-schedule",
+    "cloudwatch-event-trigger",
+    "sqs",
+    "null"
+  ], var.trigger.type) ? true : false
+
+  grafana_configuration = {
+    name          = var.function_name
+    environment   = var.grafana_configuration.environment
+    data_source   = var.grafana_configuration.data_source
+    trigger       = var.trigger.type
+    notifications = var.grafana_configuration.notifications
+    folder        = var.grafana_configuration.folder
+    topics        = []
+  }
+}

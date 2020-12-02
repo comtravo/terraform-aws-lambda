@@ -14,6 +14,17 @@ services:
       - LOCALSTACK_HOST=localstack
     depends_on:
       - localstack
+      - grafana
+
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - ./test/fixtures/grafana_provisioning/:/etc/grafana/provisioning/
+    depends_on:
+      - slack
+
+  slack:
+    image: ealen/echo-server:latest
 
   localstack:
     image: localstack/localstack:0.11.4
