@@ -56,8 +56,10 @@ MIT Licensed. See LICENSE for full details.
 |------|-------------|
 | arn | AWS lambda arn |
 | dlq | AWS lambda Dead Letter Queue details |
+| function_name | AWS lambda function name |
 | invoke_arn | AWS lambda invoke_arn |
 | qualified_arn | AWS lambda qualified_arn |
 | queue | AWS lambda SQS details |
+| sns_topics | AWS lambda SNS topics if any |
 | version | AWS lambda version |
 
