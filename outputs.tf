@@ -28,3 +28,12 @@ output "queue" {
   value       = module.triggered-by-sqs.queue
 }
 
+output "function_name" {
+  description = "AWS lambda function name"
+  value       = aws_lambda_function.lambda.function_name
+}
+
+output "sns_topics" {
+  description = "AWS lambda SNS topics if any"
+  value       = try(var.trigger.sns_topics, [])
+}
