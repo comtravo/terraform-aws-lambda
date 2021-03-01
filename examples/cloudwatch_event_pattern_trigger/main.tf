@@ -44,8 +44,8 @@ module "cloudwatch_event_pattern_trigger" {
   handler       = "index.handler"
   role          = aws_iam_role.lambda.arn
   trigger = {
-    type                = "cloudwatch-event-trigger"
-    schedule_expression = <<PATTERN
+    type          = "cloudwatch-event-trigger"
+    event_pattern = <<PATTERN
 {
   "source": [
     "aws.s3"

@@ -76,10 +76,10 @@ module "sqs" {
   }
 
   depends_on = [
-      aws_sns_topic.foo,
-      aws_sns_topic.bar,
-      aws_sns_topic.baz,
-    ]
+    aws_sns_topic.foo,
+    aws_sns_topic.bar,
+    aws_sns_topic.baz,
+  ]
 }
 
 output "arn" {
