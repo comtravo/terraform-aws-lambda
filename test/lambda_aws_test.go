@@ -204,6 +204,12 @@ func TestLambda_sqsFifoSnsTriggerExample(t *testing.T) {
 	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
 	exampleDir := "../examples/sqs_fifo_sns_trigger/"
 
+	sns_targets := []string{"aws_sns_topic.foo", "aws_sns_topic.bar", "aws_sns_topic.baz"}
+
+	snsTerraformOptions := SetupExample(t, functionName, exampleDir, sns_targets)
+	t.Logf("Terraform module inputs: %+v", *snsTerraformOptions)
+	terraform.InitAndApply(t, snsTerraformOptions)
+
 	terraformOptions := SetupExample(t, functionName, exampleDir, nil)
 	t.Logf("Terraform module inputs: %+v", *terraformOptions)
 	defer terraform.Destroy(t, terraformOptions)
