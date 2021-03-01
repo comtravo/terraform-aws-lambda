@@ -2,7 +2,7 @@
 
 DOCKER_COMPOSE=docker-compose -f ./docker-compose.yml
 DOCKER_COMPOSE_DEVELOP=$(DOCKER_COMPOSE) -f ./docker-compose.develop.yml
-GENERATE_DOCS_COMMAND:=terraform-docs --sort-inputs-by-required markdown --no-escape . > README.md
+GENERATE_DOCS_COMMAND:=terraform-docs markdown . > README.md
 
 fmt:
 	@terraform fmt -recursive
