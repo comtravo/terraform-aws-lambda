@@ -7,7 +7,7 @@ Allow this lambda to be triggered by Cloudwatch Event Trigger
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12 |
+| terraform | >= 0.13 |
 | aws | ~> 3.0 |
 
 ## Providers
@@ -20,11 +20,10 @@ Allow this lambda to be triggered by Cloudwatch Event Trigger
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| event_config | Cloudwatch event configuration | <pre>object({<br>    name : string<br>    description : string<br>    event_pattern : string<br>  })</pre> | n/a | yes |
-| lambda_function_arn | Lambda function arn | `string` | n/a | yes |
 | enable | Enable module | `bool` | `false` | no |
+| event\_config | Cloudwatch event configuration | <pre>object({<br>    name : string<br>    description : string<br>    event_pattern : string<br>  })</pre> | n/a | yes |
+| lambda\_function\_arn | Lambda function arn | `string` | n/a | yes |
 
 ## Outputs
 
 No output.
-

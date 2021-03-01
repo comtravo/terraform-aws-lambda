@@ -7,7 +7,7 @@ Allow this lambda to be triggered by Cloudwatch logs
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12 |
+| terraform | >= 0.13 |
 | aws | ~> 3.0 |
 
 ## Providers
@@ -20,11 +20,10 @@ Allow this lambda to be triggered by Cloudwatch logs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| lambda_function_arn | Lambda arn | `string` | n/a | yes |
-| region | AWS region | `string` | n/a | yes |
 | enable | Enable module | `bool` | `false` | no |
+| lambda\_function\_arn | Lambda arn | `string` | n/a | yes |
+| region | AWS region | `string` | n/a | yes |
 
 ## Outputs
 
 No output.
-

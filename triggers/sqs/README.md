@@ -7,7 +7,7 @@ Allow this lambda to be triggered by SQS and optionally subscribe to SNS topics
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12 |
+| terraform | >= 0.13 |
 | aws | ~> 3.0 |
 
 ## Providers
@@ -20,10 +20,10 @@ Allow this lambda to be triggered by SQS and optionally subscribe to SNS topics
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| lambda_function_arn | Lambda function arn | `string` | n/a | yes |
-| sqs_config | SQS config | <pre>object({<br>    sns_topics : list(string)<br>    fifo : bool<br>    sqs_name : string<br>    visibility_timeout_seconds : number<br>    batch_size : number<br>  })</pre> | n/a | yes |
-| tags | Tags | `map(string)` | n/a | yes |
 | enable | Enable module | `bool` | `false` | no |
+| lambda\_function\_arn | Lambda function arn | `string` | n/a | yes |
+| sqs\_config | SQS config | <pre>object({<br>    sns_topics : list(string)<br>    fifo : bool<br>    sqs_name : string<br>    visibility_timeout_seconds : number<br>    batch_size : number<br>  })</pre> | n/a | yes |
+| tags | Tags | `map(string)` | n/a | yes |
 
 ## Outputs
 
@@ -31,6 +31,5 @@ Allow this lambda to be triggered by SQS and optionally subscribe to SNS topics
 |------|-------------|
 | dlq | Dead letter queue details |
 | queue | SQS queue details |
-| queue_arn | SQS ARN |
-| queue_id | SQS endpoint |
-
+| queue\_arn | SQS ARN |
+| queue\_id | SQS endpoint |

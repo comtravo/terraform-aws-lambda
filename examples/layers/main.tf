@@ -34,6 +34,12 @@ resource "aws_iam_role_policy" "lambda" {
   policy = data.aws_iam_policy_document.policy.json
 }
 
+resource "aws_lambda_layer_version" "test" {
+  filename   = "${path.module}/../../test/fixtures/foo.zip"
+  layer_name = "foo_layer"
+
+  compatible_runtimes = ["nodejs12.x"]
+}
 
 module "layers" {
 
@@ -42,8 +48,8 @@ module "layers" {
   file_name     = "${path.module}/../../test/fixtures/foo.zip"
   function_name = var.function_name
   handler       = "index.handler"
-  role          = aws_iam_role.lambda.name
-  layers        = ["arn:aws:lambda:us-east-1:284387765956:layer:BetterSqlite3:8"]
+  role          = aws_iam_role.lambda.arn
+  layers        = [aws_lambda_layer_version.test.arn]
   trigger = {
     type = "api-gateway"
   }

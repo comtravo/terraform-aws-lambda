@@ -5,10 +5,5 @@ services:
     command: bash
     volumes:
       - ./:/go/src/github.com/comtravo/terraform-aws-lambda
-
-  localstack:
-    ports:
-      - 4566:4566
-      - 4584-4597:4584-4597
-      - 4567-4583:4567-4583
-      - 8080:8080
+    environment:
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN:-foo} # automated infra testing acc creds

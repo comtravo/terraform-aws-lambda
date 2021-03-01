@@ -42,10 +42,32 @@ module "cloudwatch_event_pattern_trigger" {
   file_name     = "${path.module}/../../test/fixtures/foo.zip"
   function_name = var.function_name
   handler       = "index.handler"
-  role          = aws_iam_role.lambda.name
+  role          = aws_iam_role.lambda.arn
   trigger = {
-    type                = "cloudwatch-event-trigger"
-    schedule_expression = "{}"
+    type          = "cloudwatch-event-trigger"
+    event_pattern = <<PATTERN
+{
+  "source": [
+    "aws.s3"
+  ],
+  "detail-type": [
+    "AWS API Call via CloudTrail"
+  ],
+  "detail": {
+    "eventSource": [
+      "s3.amazonaws.com"
+    ],
+    "eventName": [
+      "PutObject"
+    ],
+    "requestParameters": {
+      "bucketName": [
+        "foo-bar-baz"
+      ]
+    }
+  }
+}
+PATTERN
   }
   environment = {
     "LOREM" = "IPSUM"

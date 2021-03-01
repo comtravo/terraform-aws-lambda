@@ -55,13 +55,13 @@ module "sqs" {
   function_name = var.function_name
   handler       = "index.handler"
   publish       = true
-  role          = aws_iam_role.lambda.name
-  layers        = ["arn:aws:lambda:us-east-1:284387765956:layer:BetterSqlite3:8"]
+  role          = aws_iam_role.lambda.arn
+
   trigger = {
     sns_topics = [
-      "arn:aws:sns:us-east-1:000000000000:${aws_sns_topic.foo.name}",
-      "arn:aws:sns:us-east-1:000000000000:${aws_sns_topic.bar.name}",
-      "arn:aws:sns:us-east-1:000000000000:${aws_sns_topic.baz.name}",
+      aws_sns_topic.foo.arn,
+      aws_sns_topic.bar.arn,
+      aws_sns_topic.baz.arn,
     ]
     type       = "sqs"
     batch_size = 10
