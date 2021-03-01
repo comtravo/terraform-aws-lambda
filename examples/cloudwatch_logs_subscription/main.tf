@@ -42,7 +42,7 @@ module "cloudwatch_log_consumer" {
   file_name     = "${path.module}/../../test/fixtures/foo.zip"
   function_name = "${var.function_name}-consumer"
   handler       = "index.handler"
-  role          = aws_iam_role.lambda.name
+  role          = aws_iam_role.lambda.arn
   trigger = {
     type = "cloudwatch-logs"
   }
@@ -59,7 +59,7 @@ module "cloudwatch_log_producer" {
   file_name     = "${path.module}/../../test/fixtures/foo.zip"
   function_name = "${var.function_name}-producer"
   handler       = "index.handler"
-  role          = aws_iam_role.lambda.name
+  role          = aws_iam_role.lambda.arn
   trigger = {
     type = "api-gateway"
   }

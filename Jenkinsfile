@@ -23,7 +23,9 @@ pipeline {
         script {
           try {
             sh(label: 'Building docker image', script: "make build")
-            sh(label: 'Testing docker image', script: "make test-docker")
+            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'automated-infra-testing-account', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+              sh(label: 'Testing docker image', script: "make test-docker")
+            }
           } finally {
             sh(label: 'Cleanup', script: "make clean-all")
           }

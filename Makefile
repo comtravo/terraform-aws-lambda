@@ -16,10 +16,10 @@ lint:
 build:
 	@$(DOCKER_COMPOSE) build
 
-test-localstack:
-	@cd test && go test -tags=localstack
+test-aws:
+	@cd test && go test -tags=aws
 
-test-all: test-localstack
+test-all: test-aws
 
 test-docker:
 	@$(DOCKER_COMPOSE) run --rm terraform make lint

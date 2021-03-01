@@ -42,8 +42,7 @@ module "publish" {
   function_name = var.function_name
   handler       = "index.handler"
   publish       = true
-  role          = aws_iam_role.lambda.name
-  layers        = ["arn:aws:lambda:us-east-1:284387765956:layer:BetterSqlite3:8"]
+  role          = aws_iam_role.lambda.arn
   trigger = {
     type = "api-gateway"
   }
