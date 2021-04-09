@@ -22,7 +22,6 @@ test-aws:
 test-all: test-aws
 
 test-docker:
-	@$(DOCKER_COMPOSE) run --rm terraform make lint
 	@$(DOCKER_COMPOSE) run --rm terraform make test-all
 	@$(DOCKER_COMPOSE) down -v
 

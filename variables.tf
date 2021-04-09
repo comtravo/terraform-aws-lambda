@@ -38,7 +38,7 @@ variable "memory_size" {
 
 variable "runtime" {
   description = "Lambda function runtime"
-  default     = "nodejs12.x"
+  default     = "nodejs14.x"
   type        = string
 }
 
