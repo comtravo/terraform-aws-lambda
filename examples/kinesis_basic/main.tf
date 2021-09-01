@@ -36,8 +36,12 @@ resource "aws_iam_role_policy" "lambda" {
 
 
 resource "aws_kinesis_stream" "this" {
-  name             = var.function_name
-  shard_count      = 1
+  name        = var.function_name
+  shard_count = 1
+}
+
+resource "aws_sqs_queue" "this" {
+  name = var.function_name
 }
 
 module "this" {
@@ -60,17 +64,17 @@ module "this" {
   }
   kinesis_configuration = {
     "test" = {
-      batch_size = null
-      bisect_batch_on_function_error = null
-      destination_config__on_failure__destination_arn = null
-      event_source_arn = aws_kinesis_stream.this.arn
-      maximum_batching_window_in_seconds = null
-      maximum_record_age_in_seconds = null
-      maximum_retry_attempts = null
-      parallelization_factor = null
-      starting_position = null
-      starting_position_timestamp = null
-      tumbling_window_in_seconds = null
+      batch_size                                      = null
+      bisect_batch_on_function_error                  = null
+      destination_config__on_failure__destination_arn = aws_sqs_queue.this.arn
+      event_source_arn                                = aws_kinesis_stream.this.arn
+      maximum_batching_window_in_seconds              = null
+      maximum_record_age_in_seconds                   = null
+      maximum_retry_attempts                          = null
+      parallelization_factor                          = null
+      starting_position                               = "LATEST"
+      starting_position_timestamp                     = null
+      tumbling_window_in_seconds                      = null
     }
   }
 }
