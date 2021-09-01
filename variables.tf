@@ -159,21 +159,17 @@ variable "tracing_config" {
 variable "kinesis_configuration" {
   description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_event_source_mapping"
   type = map(object({
-    batch_size                     = number
-    bisect_batch_on_function_error = bool
-    destination_config = object({
-      on_failure = object({
-        destination_arn = string
-      })
-    })
-    event_source_arn                   = string
-    maximum_batching_window_in_seconds = number
-    maximum_record_age_in_seconds      = number
-    maximum_retry_attempts             = number
-    parallelization_factor             = number
-    starting_position                  = string
-    starting_position_timestamp        = string
-    tumbling_window_in_seconds         = number
+    batch_size                                      = number
+    bisect_batch_on_function_error                  = bool
+    destination_config__on_failure__destination_arn = string
+    event_source_arn                                = string
+    maximum_batching_window_in_seconds              = number
+    maximum_record_age_in_seconds                   = number
+    maximum_retry_attempts                          = number
+    parallelization_factor                          = number
+    starting_position                               = string
+    starting_position_timestamp                     = string
+    tumbling_window_in_seconds                      = number
   }))
   default = {}
 }
