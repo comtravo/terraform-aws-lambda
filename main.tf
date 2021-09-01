@@ -40,7 +40,7 @@ resource "aws_lambda_function" "lambda" {
     security_group_ids = var.vpc_config.security_group_ids
   }
 
-  dynamic environment {
+  dynamic "environment" {
     for_each = var.environment == null ? [] : [var.environment]
 
     content {
@@ -134,6 +134,13 @@ module "triggered-by-sqs" {
   }
 
   tags = local.tags
+}
+
+module "triggered_by_kinesis" {
+  source = "./triggers/kinesis/"
+
+  lambda_function_arn   = aws_lambda_function.lambda.arn
+  kinesis_configuration = var.kinesis_configuration
 }
 
 module "cloudwatch-log-subscription" {
