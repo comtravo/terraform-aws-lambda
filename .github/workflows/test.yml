@@ -1,0 +1,14 @@
+name: test
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - run: make test-aws
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AUTOMATED_TESTING_AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AUTOMATED_TESTING_AWS_SECRET_ACCESS_KEY }}
+
