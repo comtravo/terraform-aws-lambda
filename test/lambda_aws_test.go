@@ -41,6 +41,19 @@ func TestLambda_kinesisTriggerBasicExample(t *testing.T) {
 	TerraformApplyAndValidateOutputs(t, terraformOptions)
 }
 
+func TestLambda_kinesisTriggerMultipleExample(t *testing.T) {
+	t.Parallel()
+
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/kinesis_multiple/"
+
+	terraformOptions := SetupExample(t, functionName, exampleDir, nil)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
+
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+}
+
 func TestLambda_noEnvironmentVariables(t *testing.T) {
 	t.Parallel()
 
