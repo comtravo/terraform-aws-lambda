@@ -11,12 +11,8 @@ variable "image_uri" {
 
 variable "image_config" {
   description = "Container image configuration values that override the values in the container image Dockerfile."
-  type = object({
-    command           = string
-    entry_point       = string
-    working_directory = string
-  })
-  default = null
+  type        = map(string)
+  default     = {}
 }
 
 variable "layers" {
