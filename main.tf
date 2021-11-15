@@ -37,7 +37,7 @@ resource "aws_lambda_function" "lambda" {
 
     content {
       command           = image_config.value.command
-      entrypoint        = image_config.value.entrypoint
+      entry_point       = image_config.value.entry_point
       working_directory = image_config.value.working_directory
     }
   }

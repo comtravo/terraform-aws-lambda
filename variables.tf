@@ -13,7 +13,7 @@ variable "image_config" {
   description = "Container image configuration values that override the values in the container image Dockerfile."
   type = object({
     command           = string
-    entrypoint        = string
+    entry_point       = string
     working_directory = string
   })
   default = null
