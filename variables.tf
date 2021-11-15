@@ -3,6 +3,22 @@ variable "file_name" {
   type        = string
 }
 
+variable "image_uri" {
+  description = "ECR image URI containing the function's deployment package"
+  type        = string
+  default     = null
+}
+
+variable "image_config" {
+  description = "Container image configuration values that override the values in the container image Dockerfile."
+  type = object({
+    command           = string
+    entrypoint        = string
+    working_directory = string
+  })
+  default = null
+}
+
 variable "layers" {
   description = "List of layers for this lambda function"
   type        = list(string)

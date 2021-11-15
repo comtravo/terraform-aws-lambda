@@ -30,6 +30,17 @@ resource "aws_lambda_function" "lambda" {
   reserved_concurrent_executions = var.reserved_concurrent_executions
   publish                        = var.publish
   source_code_hash               = local.source_code_hash
+  image_uri                      = var.image_uri
+
+  dynamic "image_config" {
+    for_each = var.image_config
+
+    content {
+      command           = image_config.value.command
+      entrypoint        = image_config.value.entrypoint
+      working_directory = image_config.value.working_directory
+    }
+  }
 
   tracing_config {
     mode = var.tracing_config.mode

@@ -11,7 +11,7 @@ fmt:
 lint:
 	@terraform fmt -check -recursive -diff=true
 	@test -z $(shell find . -type f -name '*.go' | xargs gofmt -l)
-	@tflint
+	# @tflint
 
 build:
 	@$(DOCKER_COMPOSE) build
