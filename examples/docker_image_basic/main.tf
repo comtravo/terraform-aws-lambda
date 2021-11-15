@@ -39,7 +39,7 @@ module "null_trigger" {
 
   source = "../../"
 
-  image_uril    = "public.ecr.aws/lambda/nodejs:14"
+  image_uri     = "public.ecr.aws/lambda/nodejs:14"
   function_name = var.function_name
   handler       = "index.handler"
   role          = aws_iam_role.lambda.arn
