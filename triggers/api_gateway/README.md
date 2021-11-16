@@ -1,38 +1,28 @@
 # Trigger plugin for the AWS Lambda module
 
-## Introduction
+## Introduction  
 Allow this lambda to be triggered by API Gateways
 
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.0 |
+| terraform | >= 0.13 |
+| aws | ~> 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 3.0 |
-
-## Modules
-
-No modules.
-
-## Resources
-
-| Name | Type |
-|------|------|
-| [aws_lambda_permission.allow_apigateway](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
+| aws | ~> 3.0 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_enable"></a> [enable](#input\_enable) | Enable API Gateway trigger | `bool` | `false` | no |
-| <a name="input_lambda_function_arn"></a> [lambda\_function\_arn](#input\_lambda\_function\_arn) | Lambda arn | `string` | n/a | yes |
+| enable | Enable API Gateway trigger | `bool` | `false` | no |
+| lambda\_function\_arn | Lambda arn | `string` | n/a | yes |
 
 ## Outputs
 
-No outputs.
+No output.

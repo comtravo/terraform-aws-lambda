@@ -1,6 +1,23 @@
 variable "file_name" {
   description = "Lambda function filename name"
   type        = string
+  default     = null
+}
+
+variable "image_uri" {
+  description = "ECR image URI containing the function's deployment package"
+  type        = string
+  default     = null
+}
+
+variable "image_config" {
+  description = "Container image configuration values that override the values in the container image Dockerfile."
+  type        = object({
+    command = list(string)
+    entry_point = list(string)
+    working_directory = string
+  })
+  default     = null
 }
 
 variable "layers" {
@@ -139,8 +156,7 @@ locals {
 }
 
 locals {
-  source_code_hash = filebase64sha256(var.file_name)
-
+  source_code_hash = var.file_name != null ? filebase64sha256(var.file_name) : null
   tags                      = merge(var.tags, local._tags)
   cloudwatch_log_group_name = "/aws/lambda/${var.function_name}"
 }
