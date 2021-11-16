@@ -224,7 +224,7 @@ func TestLambda_sqsExternalTriggerExample(t *testing.T) {
 	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
 	exampleDir := "../examples/sqs_external_trigger/"
 
-	sqsTargets := []string{"aws_sqs_queue.foo", "aws_sqs_queue.two", "aws_sqs_queue.three", "aws_sqs_queue.fifo"}
+	sqsTargets := []string{"aws_sqs_queue.one", "aws_sqs_queue.two", "aws_sqs_queue.three", "aws_sqs_queue.fifo"}
 	sqsTerraformOptions := SetupExample(t, functionName, exampleDir, sqsTargets)
 	t.Logf("Terraform module inputs: %+v", *sqsTerraformOptions)
 	terraform.InitAndApply(t, sqsTerraformOptions)

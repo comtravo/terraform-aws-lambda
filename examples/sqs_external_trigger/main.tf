@@ -61,6 +61,7 @@ module "sqs" {
   handler       = "index.handler"
   publish       = true
   role          = aws_iam_role.lambda.arn
+  timeout       = 10
 
   trigger = {
     type = "sqs-external"
