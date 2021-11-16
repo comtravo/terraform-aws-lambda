@@ -36,7 +36,7 @@ resource "aws_iam_role_policy" "lambda" {
 
 
 resource "aws_sqs_queue" "fifo" {
-  name       = "fifo"
+  name       = "my-queue.fifo"
   fifo_queue = true
 }
 
