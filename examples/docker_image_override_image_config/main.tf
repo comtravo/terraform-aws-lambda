@@ -39,11 +39,11 @@ module "null_trigger" {
 
   source = "../../"
 
-  image_uri     = "636553281721.dkr.ecr.us-east-1.amazonaws.com/test-lambda:latest"
+  image_uri = "636553281721.dkr.ecr.us-east-1.amazonaws.com/test-lambda:latest"
   image_config = {
-    command = ["index.anotherHandler"]
+    command           = ["index.anotherHandler"]
     working_directory = "/var/task"
-    entry_point = ["/lambda-entrypoint.sh"]
+    entry_point       = ["/lambda-entrypoint.sh"]
   }
   function_name = var.function_name
   handler       = "index.handler"

@@ -218,6 +218,19 @@ func TestLambda_sqsTriggerExample(t *testing.T) {
 	ValidateSQSTriggerOutputs(t, terraformOptions, false)
 }
 
+func TestLambda_sqsExternalTriggerExample(t *testing.T) {
+	t.Parallel()
+
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/sqs_external_trigger/"
+
+	terraformOptions := SetupExample(t, functionName, exampleDir, nil)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
+
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+}
+
 func TestLambda_sqsSnsTriggerExample(t *testing.T) {
 	t.Parallel()
 

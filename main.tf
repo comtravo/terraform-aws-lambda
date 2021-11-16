@@ -31,7 +31,7 @@ resource "aws_lambda_function" "lambda" {
   publish                        = var.publish
   source_code_hash               = local.source_code_hash
   image_uri                      = var.image_uri
-  package_type = var.file_name != null ? "Zip" : "Image"
+  package_type                   = var.file_name != null ? "Zip" : "Image"
 
   dynamic "image_config" {
     for_each = var.image_config == null ? [] : [var.image_config]
@@ -153,6 +153,13 @@ module "triggered_by_kinesis" {
 
   lambda_function_arn   = aws_lambda_function.lambda.arn
   kinesis_configuration = var.kinesis_configuration
+}
+
+module "sqs_external" {
+  source = "./triggers/sqs_external/"
+
+  lambda_function_arn   = aws_lambda_function.lambda.arn
+  kinesis_configuration = var.sqs_external
 }
 
 module "cloudwatch-log-subscription" {

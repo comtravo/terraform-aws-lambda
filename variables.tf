@@ -12,12 +12,12 @@ variable "image_uri" {
 
 variable "image_config" {
   description = "Container image configuration values that override the values in the container image Dockerfile."
-  type        = object({
-    command = list(string)
-    entry_point = list(string)
+  type = object({
+    command           = list(string)
+    entry_point       = list(string)
     working_directory = string
   })
-  default     = null
+  default = null
 }
 
 variable "layers" {
@@ -101,9 +101,10 @@ variable "trigger" {
       "cloudwatch-event-schedule",
       "cloudwatch-event-trigger",
       "sqs",
+      "sqs-external",
       "step-function",
       "kinesis",
-      "null"
+      "null",
     ], var.trigger.type)
 
     error_message = "Unknown trigger type."
@@ -156,7 +157,7 @@ locals {
 }
 
 locals {
-  source_code_hash = var.file_name != null ? filebase64sha256(var.file_name) : null
+  source_code_hash          = var.file_name != null ? filebase64sha256(var.file_name) : null
   tags                      = merge(var.tags, local._tags)
   cloudwatch_log_group_name = "/aws/lambda/${var.function_name}"
 }
@@ -188,4 +189,13 @@ variable "kinesis_configuration" {
     tumbling_window_in_seconds                      = number
   }))
   default = {}
+}
+
+variable "sqs_external" {
+  description = "External SQS to consume"
+  type = object({
+    batch_size = number
+    sqs_arns   = list(string)
+  })
+  default = null
 }
