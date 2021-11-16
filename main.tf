@@ -158,8 +158,8 @@ module "triggered_by_kinesis" {
 module "sqs_external" {
   source = "./triggers/sqs_external/"
 
-  lambda_function_arn   = aws_lambda_function.lambda.arn
-  kinesis_configuration = var.sqs_external
+  lambda_function_arn = aws_lambda_function.lambda.arn
+  sqs_external        = var.sqs_external
 }
 
 module "cloudwatch-log-subscription" {
