@@ -35,21 +35,48 @@ resource "aws_iam_role_policy" "lambda" {
 }
 
 
-module "null_trigger" {
+resource "aws_sqs_queue" "fifo" {
+  name       = "my-queue.fifo"
+  fifo_queue = true
+}
+
+resource "aws_sqs_queue" "one" {
+  name = "one"
+}
+
+resource "aws_sqs_queue" "two" {
+  name = "two"
+}
+
+resource "aws_sqs_queue" "three" {
+  name = "three"
+}
+
+module "sqs" {
 
   source = "../../"
 
-  image_uri = "636553281721.dkr.ecr.us-east-1.amazonaws.com/test-lambda:latest"
-  image_config = {
-    command           = ["index.anotherHandler"]
-    working_directory = "/var/task"
-    entry_point       = ["/lambda-entrypoint.sh"]
-  }
+  file_name     = "${path.module}/../../test/fixtures/foo.zip"
   function_name = var.function_name
   handler       = "index.handler"
+  publish       = true
   role          = aws_iam_role.lambda.arn
+  timeout       = 10
+
   trigger = {
-    type = "null"
+    type = "sqs-external"
+  }
+  sqs_external = {
+    batch_size = 1
+    sqs_arns = [
+      aws_sqs_queue.one.arn,
+      aws_sqs_queue.two.arn,
+      aws_sqs_queue.three.arn,
+      aws_sqs_queue.fifo.arn,
+    ]
+  }
+  environment = {
+    "LOREM" = "IPSUM"
   }
   region = "us-east-1"
   tags = {
@@ -59,31 +86,31 @@ module "null_trigger" {
 
 output "arn" {
   description = "AWS lambda arn"
-  value       = module.null_trigger.arn
+  value       = module.sqs.arn
 }
 
 output "qualified_arn" {
   description = "AWS lambda qualified_arn"
-  value       = module.null_trigger.qualified_arn
+  value       = module.sqs.qualified_arn
 }
 
 output "invoke_arn" {
   description = "AWS lambda invoke_arn"
-  value       = module.null_trigger.invoke_arn
+  value       = module.sqs.invoke_arn
 }
 
 output "version" {
   description = "AWS lambda version"
-  value       = module.null_trigger.version
+  value       = module.sqs.version
 }
 
 output "dlq" {
   description = "AWS lambda Dead Letter Queue details"
-  value       = module.null_trigger.dlq
+  value       = module.sqs.dlq
 }
 
 output "queue" {
   description = "AWS lambda SQS details"
-  value       = module.null_trigger.queue
+  value       = module.sqs.queue
 }
 

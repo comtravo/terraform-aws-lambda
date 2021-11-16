@@ -218,14 +218,32 @@ func TestLambda_sqsTriggerExample(t *testing.T) {
 	ValidateSQSTriggerOutputs(t, terraformOptions, false)
 }
 
+func TestLambda_sqsExternalTriggerExample(t *testing.T) {
+	t.Parallel()
+
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/sqs_external_trigger/"
+
+	sqsTargets := []string{"aws_sqs_queue.one", "aws_sqs_queue.two", "aws_sqs_queue.three", "aws_sqs_queue.fifo"}
+	sqsTerraformOptions := SetupExample(t, functionName, exampleDir, sqsTargets)
+	t.Logf("Terraform module inputs: %+v", *sqsTerraformOptions)
+	terraform.InitAndApply(t, sqsTerraformOptions)
+
+	terraformOptions := SetupExample(t, functionName, exampleDir, nil)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
+
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+}
+
 func TestLambda_sqsSnsTriggerExample(t *testing.T) {
 	t.Parallel()
 
 	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
 	exampleDir := "../examples/sqs_sns_trigger/"
-	sns_targets := []string{"aws_sns_topic.foo", "aws_sns_topic.bar", "aws_sns_topic.baz"}
+	snsTargets := []string{"aws_sns_topic.foo", "aws_sns_topic.bar", "aws_sns_topic.baz"}
 
-	snsTerraformOptions := SetupExample(t, functionName, exampleDir, sns_targets)
+	snsTerraformOptions := SetupExample(t, functionName, exampleDir, snsTargets)
 	t.Logf("Terraform module inputs: %+v", *snsTerraformOptions)
 	terraform.InitAndApply(t, snsTerraformOptions)
 
@@ -256,9 +274,9 @@ func TestLambda_sqsFifoSnsTriggerExample(t *testing.T) {
 	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
 	exampleDir := "../examples/sqs_fifo_sns_trigger/"
 
-	sns_targets := []string{"aws_sns_topic.foo", "aws_sns_topic.bar", "aws_sns_topic.baz"}
+	snsTargets := []string{"aws_sns_topic.foo", "aws_sns_topic.bar", "aws_sns_topic.baz"}
 
-	snsTerraformOptions := SetupExample(t, functionName, exampleDir, sns_targets)
+	snsTerraformOptions := SetupExample(t, functionName, exampleDir, snsTargets)
 	t.Logf("Terraform module inputs: %+v", *snsTerraformOptions)
 	terraform.InitAndApply(t, snsTerraformOptions)
 
