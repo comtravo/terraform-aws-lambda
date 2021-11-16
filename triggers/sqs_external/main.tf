@@ -13,7 +13,7 @@ variable "sqs_external" {
 }
 
 resource "aws_lambda_event_source_mapping" "this" {
-  for_each = var.sqs_external.sqs_arns != null ? var.sqs_external.sqs_arns : []
+  for_each = var.sqs_external != null ? var.sqs_external.sqs_arns : []
 
   function_name    = var.lambda_function_arn
   batch_size       = var.sqs_external.batch_size
