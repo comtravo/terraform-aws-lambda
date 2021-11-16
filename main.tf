@@ -34,7 +34,7 @@ resource "aws_lambda_function" "lambda" {
   package_type = var.file_name != null ? "Zip" : "Image"
 
   dynamic "image_config" {
-    for_each = var.image_config
+    for_each = var.image_config == null ? [] : [var.image_config]
 
     content {
       command           = image_config.value.command
