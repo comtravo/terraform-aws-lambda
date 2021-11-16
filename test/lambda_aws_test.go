@@ -226,7 +226,7 @@ func TestLambda_sqsExternalTriggerExample(t *testing.T) {
 
 	sqsTargets := []string{"aws_sqs_queue.foo", "aws_sqs_queue.two", "aws_sqs_queue.three", "aws_sqs_queue.fifo"}
 	sqsTerraformOptions := SetupExample(t, functionName, exampleDir, sqsTargets)
-	t.Logf("Terraform module inputs: %+v", *snsTerraformOptions)
+	t.Logf("Terraform module inputs: %+v", *sqsTerraformOptions)
 	terraform.InitAndApply(t, sqsTerraformOptions)
 
 	terraformOptions := SetupExample(t, functionName, exampleDir, nil)
