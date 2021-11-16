@@ -1,6 +1,7 @@
 variable "file_name" {
   description = "Lambda function filename name"
   type        = string
+  default     = null
 }
 
 variable "image_uri" {
@@ -151,8 +152,7 @@ locals {
 }
 
 locals {
-  source_code_hash = filebase64sha256(var.file_name)
-
+  source_code_hash = var.file_name != null ? filebase64sha256(var.file_name) : null
   tags                      = merge(var.tags, local._tags)
   cloudwatch_log_group_name = "/aws/lambda/${var.function_name}"
 }

@@ -31,6 +31,7 @@ resource "aws_lambda_function" "lambda" {
   publish                        = var.publish
   source_code_hash               = local.source_code_hash
   image_uri                      = var.image_uri
+  package_type = var.file_name != null ? "Zip" : "Image"
 
   dynamic "image_config" {
     for_each = var.image_config
