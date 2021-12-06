@@ -46,7 +46,6 @@ module "null_trigger" {
     entry_point       = ["/lambda-entrypoint.sh"]
   }
   function_name = var.function_name
-  handler       = "index.handler"
   role          = aws_iam_role.lambda.arn
   trigger = {
     type = "null"
