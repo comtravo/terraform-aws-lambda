@@ -34,6 +34,7 @@ variable "function_name" {
 variable "handler" {
   description = "Lambda function handler"
   type        = string
+  default     = null
 }
 
 variable "role" {
