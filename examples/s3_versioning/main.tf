@@ -37,6 +37,9 @@ resource "aws_iam_role_policy" "lambda" {
 resource "aws_s3_bucket" "b" {
   bucket = var.function_name
   acl    = "private"
+  versioning {
+    enabled = true
+  }
 }
 
 resource "aws_s3_bucket_object" "object" {
@@ -51,11 +54,12 @@ module "s3" {
 
   source = "../../"
 
-  s3_bucket     = aws_s3_bucket.b.id
-  s3_key        = aws_s3_bucket_object.object.key
-  function_name = var.function_name
-  handler       = "index.handler"
-  role          = aws_iam_role.lambda.arn
+  s3_bucket         = aws_s3_bucket.b.id
+  s3_key            = aws_s3_bucket_object.object.key
+  s3_object_version = aws_s3_bucket_object.object.version_id
+  function_name     = var.function_name
+  handler           = "index.handler"
+  role              = aws_iam_role.lambda.arn
   trigger = {
     type = "api-gateway"
   }
