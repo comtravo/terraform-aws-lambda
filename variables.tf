@@ -20,6 +20,24 @@ variable "image_config" {
   default = null
 }
 
+variable "s3_bucket" {
+  description = "S3 bucket name where lambda package is stored"
+  default     = null
+  type        = string
+}
+
+variable "s3_key" {
+  description = "S3 key where lambda package is stored"
+  default     = null
+  type        = string
+}
+
+variable "s3_object_version" {
+  description = "S3 object version of the lambda package"
+  default     = null
+  type        = string
+}
+
 variable "layers" {
   description = "List of layers for this lambda function"
   type        = list(string)
@@ -59,6 +77,8 @@ variable "runtime" {
   default     = "nodejs14.x"
   type        = string
 }
+
+
 
 variable "timeout" {
   description = "Lambda function runtime"

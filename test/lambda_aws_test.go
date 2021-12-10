@@ -28,6 +28,19 @@ func TestLambda_apiGatewayTriggerExample(t *testing.T) {
 	require.Regexp(t, regexp.MustCompile("arn:aws:apigateway:us-east-1:lambda:path/*"), terraform.Output(t, terraformOptions, "invoke_arn"))
 }
 
+func TestLambda_s3Example(t *testing.T) {
+	t.Parallel()
+
+	functionName := fmt.Sprintf("lambda-%s", random.UniqueId())
+	exampleDir := "../examples/s3/"
+
+	terraformOptions := SetupExample(t, functionName, exampleDir, nil)
+	t.Logf("Terraform module inputs: %+v", *terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
+
+	TerraformApplyAndValidateOutputs(t, terraformOptions)
+}
+
 func TestLambda_kinesisTriggerBasicExample(t *testing.T) {
 	t.Parallel()
 
