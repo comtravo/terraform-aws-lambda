@@ -34,8 +34,11 @@ resource "aws_iam_role_policy" "lambda" {
   policy = data.aws_iam_policy_document.policy.json
 }
 
+resource "random_pet" "bucket_name" {
+}
+
 resource "aws_s3_bucket" "b" {
-  bucket = var.function_name
+  bucket = "ct-${random_pet.bucket_name.id}"
   acl    = "private"
 }
 
