@@ -71,31 +71,31 @@ module "s3" {
 
 output "arn" {
   description = "AWS lambda arn"
-  value       = module.api_gatewat_trigger.arn
+  value       = module.s3.arn
 }
 
 output "qualified_arn" {
   description = "AWS lambda qualified_arn"
-  value       = module.api_gatewat_trigger.qualified_arn
+  value       = module.s3.qualified_arn
 }
 
 output "invoke_arn" {
   description = "AWS lambda invoke_arn"
-  value       = module.api_gatewat_trigger.invoke_arn
+  value       = module.s3.invoke_arn
 }
 
 output "version" {
   description = "AWS lambda version"
-  value       = module.api_gatewat_trigger.version
+  value       = module.s3.version
 }
 
 output "dlq" {
   description = "AWS lambda Dead Letter Queue details"
-  value       = module.api_gatewat_trigger.dlq
+  value       = module.s3.dlq
 }
 
 output "queue" {
   description = "AWS lambda SQS details"
-  value       = module.api_gatewat_trigger.queue
+  value       = module.s3.queue
 }
 
