@@ -20,6 +20,9 @@
 resource "aws_lambda_function" "lambda" {
   filename                       = var.file_name
   function_name                  = var.function_name
+  s3_bucket                      = var.s3_bucket
+  s3_key                         = var.s3_key
+  s3_object_version              = var.s3_object_version
   layers                         = var.layers
   handler                        = var.handler
   role                           = var.role
@@ -31,7 +34,7 @@ resource "aws_lambda_function" "lambda" {
   publish                        = var.publish
   source_code_hash               = local.source_code_hash
   image_uri                      = var.image_uri
-  package_type                   = var.file_name != null ? "Zip" : "Image"
+  package_type                   = var.image_uri != null ? "Image" : "Zip"
 
   dynamic "image_config" {
     for_each = var.image_config == null ? [] : [var.image_config]
