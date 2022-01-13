@@ -37,3 +37,9 @@ output "sns_topics" {
   description = "AWS lambda SNS topics if any"
   value       = try(var.trigger.sns_topics, [])
 }
+
+output "aws_lambda_function" {
+  description = "AWS lambda attributes"
+  value       = aws_lambda_function.lambda
+}
+

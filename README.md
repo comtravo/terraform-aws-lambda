@@ -84,6 +84,7 @@ MIT Licensed. See LICENSE for full details.
 | Name | Description |
 |------|-------------|
 | <a name="output_arn"></a> [arn](#output\_arn) | AWS lambda arn |
+| <a name="output_aws_lambda_function"></a> [aws\_lambda\_function](#output\_aws\_lambda\_function) | AWS lambda attributes |
 | <a name="output_dlq"></a> [dlq](#output\_dlq) | AWS lambda Dead Letter Queue details |
 | <a name="output_function_name"></a> [function\_name](#output\_function\_name) | AWS lambda function name |
 | <a name="output_invoke_arn"></a> [invoke\_arn](#output\_invoke\_arn) | AWS lambda invoke\_arn |
