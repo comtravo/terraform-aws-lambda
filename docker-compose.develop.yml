@@ -1,9 +1,0 @@
-version: '3'
-
-services:
-  terraform:
-    command: bash
-    volumes:
-      - ./:/go/src/github.com/comtravo/terraform-aws-lambda
-    environment:
-      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN:-foo} # automated infra testing acc creds
